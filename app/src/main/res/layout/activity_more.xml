@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_mn"
+    android:overScrollMode="never"
+    android:scrollbars="none"
+    tools:context=".activitys.MoreActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cntUpdt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imgUptCnt3"
+                android:layout_width="30dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="15dp"
+                android:alpha="0.2"
+                android:rotation="216"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_sharedtok" />
+
+            <TextView
+                android:id="@+id/titleUptCnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/upd_tl"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imgUptCnt2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="40dp"
+                android:alpha="0.2"
+                android:rotation="27"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/ic_sharedtok" />
+
+            <ImageView
+                android:id="@+id/imgUptCnt"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="20dp"
+                android:alpha="0.3"
+                android:rotation="-101"
+                app:layout_constraintBottom_toBottomOf="@+id/textUptCnt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textUptCnt"
+                app:srcCompat="@drawable/ic_sharedtok" />
+
+            <TextView
+                android:id="@+id/textUptCnt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:alpha="0.8"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/upd_cntn"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toStartOf="@+id/imgUptCnt"
+                app:layout_constraintStart_toEndOf="@+id/imgUptCnt2"
+                app:layout_constraintTop_toBottomOf="@+id/titleUptCnt" />
+
+            <TextView
+                android:id="@+id/btnUptCnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/shape_cuadrado"
+                android:backgroundTint="@color/white"
+                android:paddingLeft="22dp"
+                android:paddingTop="12dp"
+                android:paddingRight="22dp"
+                android:paddingBottom="12dp"
+                android:text="@string/upd_ok"
+                android:textColor="@color/color_primary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textUptCnt" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cntShared"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/imgTlShrCnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                app:layout_constraintBottom_toBottomOf="@+id/titleShrCnt"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_music"
+                app:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/titleShrCnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif"
+                android:text="@string/shr_tl"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/imgTlShrCnt"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imgShrCnt"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="40dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/titleShrCnt"
+                app:srcCompat="@drawable/ic_notify"
+                app:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/textShrCnt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="20dp"
+                android:alpha="0.8"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/shr_cntn"
+                android:textAlignment="textStart"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imgShrCnt"
+                app:layout_constraintEnd_toStartOf="@+id/imgShrCnt"
+                app:layout_constraintStart_toStartOf="@+id/titleShrCnt"
+                app:layout_constraintTop_toTopOf="@+id/imgShrCnt" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cntNoti"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp">
+
+            <ImageView
+                android:id="@+id/imgNotiCnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                app:layout_constraintBottom_toBottomOf="@+id/titleNotiCnt"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_music"
+                app:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/titleNotiCnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/ntf_tl"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/imgNotiCnt"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textNotiCnt2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.8"
+                android:fontFamily="sans-serif-light"
+                android:text="Clasicos"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="@+id/nswt7"
+                app:layout_constraintTop_toBottomOf="@+id/nswt7" />
+
+            <Switch
+                android:id="@+id/nswt1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:alpha="0.8"
+                android:fontFamily="sans-serif-light"
+                android:switchPadding="15dp"
+                android:text="Reggaetón"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:thumbTint="@color/color_primary"
+                android:track="@drawable/switch_more"
+                app:layout_constraintStart_toStartOf="@+id/titleNotiCnt"
+                app:layout_constraintTop_toBottomOf="@+id/titleNotiCnt" />
+
+            <Switch
+                android:id="@+id/nswt2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:alpha="0.9"
+                android:fontFamily="sans-serif-light"
+                android:switchPadding="15dp"
+                android:text="LatinPop"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:thumbTint="@color/color_primary"
+                android:track="@drawable/switch_more"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/nswt1"
+                app:layout_constraintTop_toBottomOf="@+id/titleNotiCnt" />
+
+            <Switch
+                android:id="@+id/nswt3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:alpha="0.8"
+                android:fontFamily="sans-serif-light"
+                android:switchPadding="10dp"
+                android:text="Pop"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:thumbTint="@color/color_primary"
+                android:track="@drawable/switch_more"
+                app:layout_constraintEnd_toEndOf="@+id/nswt1"
+                app:layout_constraintStart_toStartOf="@+id/nswt1"
+                app:layout_constraintTop_toBottomOf="@+id/nswt1" />
+
+            <Switch
+                android:id="@+id/nswt4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:alpha="0.8"
+                android:fontFamily="sans-serif-light"
+                android:switchPadding="10dp"
+                android:text="Mod"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:thumbTint="@color/color_primary"
+                android:track="@drawable/switch_more"
+                app:layout_constraintEnd_toEndOf="@+id/nswt2"
+                app:layout_constraintStart_toStartOf="@+id/nswt2"
+                app:layout_constraintTop_toBottomOf="@+id/nswt2" />
+
+            <Switch
+                android:id="@+id/nswt5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:alpha="0.8"
+                android:fontFamily="sans-serif-light"
+                android:switchPadding="10dp"
+                android:text="Tiktok"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:thumbTint="@color/color_primary"
+                android:track="@drawable/switch_more"
+                app:layout_constraintEnd_toEndOf="@+id/nswt3"
+                app:layout_constraintStart_toStartOf="@+id/nswt3"
+                app:layout_constraintTop_toBottomOf="@+id/nswt3" />
+
+            <Switch
+                android:id="@+id/nswt6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:alpha="0.8"
+                android:fontFamily="sans-serif-light"
+                android:switchPadding="10dp"
+                android:text="Bachata"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:thumbTint="@color/color_primary"
+                android:track="@drawable/switch_more"
+                app:layout_constraintEnd_toEndOf="@+id/nswt4"
+                app:layout_constraintStart_toStartOf="@+id/nswt4"
+                app:layout_constraintTop_toBottomOf="@+id/nswt4" />
+
+            <Switch
+                android:id="@+id/nswt7"
+                android:layout_width="0dp"
+                android:layout_height="27dp"
+                android:layout_marginTop="18dp"
+                android:alpha="0.8"
+                android:fontFamily="sans-serif-light"
+                android:switchPadding="10dp"
+                android:text="LatinPop"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:thumbTint="@color/color_primary"
+                android:track="@drawable/switch_more"
+                app:layout_constraintEnd_toEndOf="@+id/nswt5"
+                app:layout_constraintStart_toStartOf="@+id/nswt5"
+                app:layout_constraintTop_toBottomOf="@+id/nswt5" />
+
+            <Switch
+                android:id="@+id/nswt8"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:alpha="0.8"
+                android:fontFamily="sans-serif-light"
+                android:switchPadding="10dp"
+                android:text="Salsa"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:thumbTint="@color/color_primary"
+                android:track="@drawable/switch_more"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/nswt6"
+                app:layout_constraintStart_toStartOf="@+id/nswt6"
+                app:layout_constraintTop_toBottomOf="@+id/nswt6" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cntLinks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp">
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                app:layout_constraintBottom_toBottomOf="@+id/titleLinkCnt"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_music"
+                app:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/titleLinkCnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/lnk_tl"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/imageView4"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/itm1LnkCnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:alpha="0.8"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/lnk_pg"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="@+id/titleLinkCnt"
+                app:layout_constraintTop_toBottomOf="@+id/titleLinkCnt" />
+
+            <TextView
+                android:id="@+id/itm2LnkCnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="17dp"
+                android:alpha="0.8"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/lnk_cmnts"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="@+id/itm1LnkCnt"
+                app:layout_constraintTop_toBottomOf="@+id/itm1LnkCnt" />
+
+            <TextView
+                android:id="@+id/itm3LnkCnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="17dp"
+                android:alpha="0.8"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/lnk_cntc"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="@+id/itm2LnkCnt"
+                app:layout_constraintTop_toBottomOf="@+id/itm2LnkCnt" />
+
+            <TextView
+                android:id="@+id/itm5LnkCnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:alpha="0.8"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/lnk_trm"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/itm3LnkCnt"
+                app:layout_constraintTop_toBottomOf="@+id/itm3LnkCnt" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+</ScrollView>

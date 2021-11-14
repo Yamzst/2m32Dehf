@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_mn"
+    tools:context=".help.SlcFragment">
+
+    <TextView
+        android:id="@+id/txplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="Play"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/btnStart"
+        app:layout_constraintStart_toStartOf="@+id/btnStart"
+        app:layout_constraintTop_toBottomOf="@+id/btnStart" />
+
+    <ImageView
+        android:id="@+id/btnStart"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="90dp"
+        android:alpha="0.9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/slcGen"
+        app:srcCompat="@drawable/anim_pause_play"
+        app:tint="@color/white" />
+
+    <NumberPicker
+        android:id="@+id/slcAge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="110dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tlAge"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </NumberPicker>
+
+    <NumberPicker
+        android:id="@+id/slcGen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        app:layout_constraintEnd_toEndOf="@+id/slcAge"
+        app:layout_constraintStart_toStartOf="@+id/slcAge"
+        app:layout_constraintTop_toBottomOf="@+id/slcAge">
+
+    </NumberPicker>
+
+    <TextView
+        android:id="@+id/tlAge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="70dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="Edad"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/slcAge"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/slcAge" />
+
+    <TextView
+        android:id="@+id/tlGen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="70dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="Genero"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/slcGen"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/slcGen" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

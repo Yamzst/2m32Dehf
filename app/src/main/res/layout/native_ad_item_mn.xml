@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="22dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginEnd="22dp"
+    android:layout_marginBottom="12dp"
+    app:elevation="0dp"
+    app:cardBackgroundColor="#1AFFFFFF"
+    app:cardCornerRadius="6dp"
+    app:cardElevation="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="0dp"
+        android:orientation="vertical"
+        android:paddingBottom="0dp">
+
+        <ImageView
+            android:id="@+id/mnImgAd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/mnTlAd"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="20dp"
+            android:lines="1"
+            android:maxLines="1"
+            android:text="TitleApp "
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/mnBtnAd"
+            app:layout_constraintStart_toEndOf="@+id/mnIcAd"
+            app:layout_constraintTop_toBottomOf="@+id/mnImgAd" />
+
+        <TextView
+            android:id="@+id/mnDesAd"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:paddingBottom="5dp"
+            android:text="Texto de la Ap"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@+id/mnTlAd"
+            app:layout_constraintStart_toStartOf="@+id/mnTlAd"
+            app:layout_constraintTop_toBottomOf="@+id/mnTlAd" />
+
+        <Button
+            android:id="@+id/mnBtnAd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/shape_circle"
+            android:text="Open"
+            android:textSize="13sp"
+            app:iconPadding="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mnImgAd" />
+
+        <ImageView
+            android:id="@+id/mnIcAd"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mnImgAd"
+            app:srcCompat="@drawable/ic_launcher_background" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

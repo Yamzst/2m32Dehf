@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Mashle</string>
+
+    <string name="title_activity_dw_image">DwImageActivity</string>
+    <string name="init_Dw">Iniciando Descarga</string>
+
+
+    <!-- MoreActivity -->
+
+    <string name="upd_tl">Actualización Disponible</string>
+    <string name="upd_cntn">Solucionamos errores y agregamos mejoras. No te pierdas de la nueva actualización.</string>
+    <string name="upd_ok">Actualizar</string>
+
+    <string name="msj_help">Comparte el link de tu canción desde Youtube, Spotify,  Esound o Trabel, para buscarla automaticamente</string>
+
+    <string name="shr_tl">Comparte Mashle</string>
+    <string name="shr_cntn">Te gusta Mashle, comparte con tus amigos para que disfruten juntos</string>
+
+    <string name="ntf_tl">Notificaciones</string>
+
+    <string name="lnk_tl">Links</string>
+    <string name="lnk_pg">Mashle Página Oficial</string>
+    <string name="lnk_cmnts">Comentarios y Sugerencias</string>
+    <string name="lnk_cntc">Contacto</string>
+    <string name="lnk_trm">Términos y Condiciones</string>
+
+    <string name="tl_email">Contacto Mashle</string>
+
+    <!-- UpdateActivity -->
+
+    <string name="update_tl">Nueva versión disponible</string>
+    <string name="update_cntn">solución de errores, mejoras y nuevas funciones</string>
+
+
+    <!-- ListActivity -->
+
+    <string name="no_fnd">No hay resultados</string>
+
+
+    <!-- ListActivity -->
+    <string name="msj_ok">continuar</string>
+
+    <!-- WifiActivity -->
+    <string name="wifi_tl">Upss</string>
+    <string name="wifi_msj">Verifica tu conexión a internet</string>
+
+    <!-- MoreActivity -->
+    <string name="help_f1_tl">Bienvenido</string>
+    <string name="help_f1_ctn">Descubre nueva musica y amplia tus playlist con Mashle</string>
+
+    <string name="help_f2_tl">Mucha diversion</string>
+    <string name="help_f2_ctn">Actualizado diariamente, descarga musica y videos de todos los generos</string>
+
+
+
+</resources>

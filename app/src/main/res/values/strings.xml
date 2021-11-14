@@ -1,0 +1,57 @@
+<resources>
+
+    <string name="app_name">Mashle</string>
+
+    <string name="title_activity_dw_image">DwImageActivity</string>
+    <string name="init_Dw">Starting Download</string>
+
+
+    <!-- MoreActivity -->
+
+    <string name="upd_tl">Update available</string>
+    <string name="upd_cntn">We fix bugs and add improvements. Don\'t miss out on the new update.</string>
+    <string name="upd_ok">Update</string>
+
+    <string name="msj_help">Share the link of your song from YouTube, Spotify, Esound or Trabel, to search for it automatically</string>
+
+    <string name="shr_tl">Share Mashle</string>
+    <string name="shr_cntn">You like Mashle, share with your friends to enjoy together</string>
+
+    <string name="ntf_tl">Notifications</string>
+
+    <string name="lnk_tl">Links</string>
+    <string name="lnk_pg">Mashle homepage</string>
+    <string name="lnk_cmnts">Comments and suggestions</string>
+    <string name="lnk_cntc">Contact</string>
+    <string name="lnk_trm">Terms and Conditions</string>
+
+    <string name="tl_email">Contact Mashle</string>
+
+
+    <!-- UpdateActivity -->
+
+    <string name="update_tl">New version available</string>
+    <string name="update_cntn">bug fixes, improvements and new features</string>
+
+
+    <!-- ListActivity -->
+
+    <string name="no_fnd">No results</string>
+
+
+    <!-- ListActivity -->
+    <string name="msj_ok">continue</string>
+
+    <!-- WifiActivity -->
+    <string name="wifi_tl">Upss</string>
+    <string name="wifi_msj">Check your internet connection</string>
+
+    <!-- MoreActivity -->
+    <string name="help_f1_tl">Welcome</string>
+    <string name="help_f1_ctn">Upss</string>
+
+    <string name="help_f2_tl">Check your internet connection</string>
+    <string name="help_f2_ctn">Check your internet connection</string>
+
+
+</resources>

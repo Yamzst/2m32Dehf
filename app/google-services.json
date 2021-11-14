@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "513963807359",
+    "project_id": "mashle",
+    "storage_bucket": "mashle.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:513963807359:android:e3186e13476c76ab9be54a",
+        "android_client_info": {
+          "package_name": "com.testlabx.mashle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "513963807359-a7ghd0gpo9tio166t4n9a54mvmoco5bs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ9YbA0DAiubE9RKugxhA34jPLgdTd6SM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "513963807359-a7ghd0gpo9tio166t4n9a54mvmoco5bs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
