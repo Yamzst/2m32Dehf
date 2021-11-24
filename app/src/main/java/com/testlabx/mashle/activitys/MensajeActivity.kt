@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.activity_mensaje.*
 import java.util.*
 
 class MensajeActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mensaje)
@@ -37,31 +38,6 @@ class MensajeActivity : AppCompatActivity() {
             }
         }
 
-    }
-
-    fun uiMode():Boolean{
-        return when (this.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_YES -> true
-            Configuration.UI_MODE_NIGHT_NO -> false
-            Configuration.UI_MODE_NIGHT_UNDEFINED ->false
-            else -> false
-        }
-    }
-
-    fun tintUi(){
-        if (!uiMode()){
-            WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = true
-            WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightNavigationBars = true
-            window.apply {
-                //statusBarColor = ContextCompat.getColor(applicationContext, R.color.tsnm)
-                //navigationBarColor = ContextCompat.getColor(applicationContext, R.color.tssc)
-            }
-        }else{
-            window.apply {
-                statusBarColor = ContextCompat.getColor(applicationContext, R.color.black)
-                navigationBarColor = ContextCompat.getColor(applicationContext, R.color.black)
-            }
-        }
     }
 
 

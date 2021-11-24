@@ -8,7 +8,7 @@ object FirebaseEvent {
 
     private var anlts:FirebaseAnalytics? = null
 
-    //SE ESTA INICIANDO CON EL CONTEXTO DE MAIN ACTIVITY
+    //Init con context de MAIN ACTIVITY
     fun init(context: Context){
         anlts = FirebaseAnalytics.getInstance(context)
     }

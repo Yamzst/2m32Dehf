@@ -15,10 +15,7 @@ object Intentsx {
 
             when{
 
-                intent.getIntentValue("ntPlst") -> "solo se tiene que asignar la varible y ya esta asignada"
-                    //App.getMainActivity()?.searchQr(valuex)
-                //v1 cambia el tab inicial al indicado para la plst
-                //v2 añade un nuevo tab y reproduce la plst de ese
+                intent.getIntentValue("ntPlst") -> "" //La varible ya se asigno
 
                 intent.getIntentValue("ntBrwsr") -> {
                     val intentNavegador = Intent(Intent.ACTION_VIEW, Uri.parse(valuex))
@@ -30,6 +27,8 @@ object Intentsx {
                         App.getMainActivity()?.updt("A", valuex)
                     }
                 }
+
+
             }
 
         }

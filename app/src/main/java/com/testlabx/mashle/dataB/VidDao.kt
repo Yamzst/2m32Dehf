@@ -64,6 +64,9 @@ interface VidDao {
     @Query("DELETE from vid")
     fun deleteAll()
 
+    @Query("DELETE from vid where idVid = :id")
+    fun deleteId(id:String)
+
 
     /*
        @Query("DELETE from user where idVid = :id")

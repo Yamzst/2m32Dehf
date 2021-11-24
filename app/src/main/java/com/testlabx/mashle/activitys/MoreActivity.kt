@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.View
 import com.google.firebase.messaging.FirebaseMessaging
 import com.testlabx.mashle.R
+import com.testlabx.mashle.helpers.Constants
 import com.testlabx.mashle.helpers.FirebaseEvent
 import com.testlabx.mashle.utils.openBrowser
 import com.testlabx.mashle.utils.sharedApp
@@ -19,7 +20,6 @@ import java.util.*
 class MoreActivity : AppCompatActivity() {
 
     private var mssging:FirebaseMessaging? = null
-
     private lateinit var storage: SharedPreferences
 
     private val DATA_NAME = "Mybdata"
@@ -35,12 +35,12 @@ class MoreActivity : AppCompatActivity() {
     private val SAVE_FIRST_VEZ = "MyFirstVz"
 
     //CAMBIAR PAGES
-    private var urlUpdt = "https://ston-app.web.app/"
-    private var urlStore = "https://ston-app.web.app/"
+    private var urlUpdt = Constants.UPD_URL
+    private var urlStore = Constants.UPD_URL
 
 
-    private var urlPgOf = "https://ston-app.web.app/"
-    private var urlTerms = "https://ston-app.web.app/terms-of-service"
+    private var urlPgOf = Constants.UPD_URL
+    private var urlPlPv = "https://mashle.web.app/privacy-policy"
     private var emailContac = "suportredox@gmail.com"
 
 
@@ -48,10 +48,10 @@ class MoreActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_more)
-        storage = getSharedPreferences(DATA_NAME, Context.MODE_PRIVATE)
 
         tintBarsTransparent()
 
+        storage = getSharedPreferences(DATA_NAME, Context.MODE_PRIVATE)
         mssging = FirebaseMessaging.getInstance()
 
 
@@ -74,13 +74,18 @@ class MoreActivity : AppCompatActivity() {
 
         val update = intent.getBooleanExtra("updt",false)
         if (update){
-            urlUpdt = intent.getStringExtra("updtUrl").toString()
+            if (intent.getStringExtra("updtUrl").toString() != ""){
+                urlUpdt = intent.getStringExtra("updtUrl").toString()
+            }
             cntUpdt.visibility = View.VISIBLE
         }else{
             cntUpdt.visibility = View.GONE
         }
 
-        urlStore = intent.getStringExtra("urlStorex").toString()
+
+        if (intent.getStringExtra("urlStorex").toString() != ""){
+            urlStore = intent.getStringExtra("urlStorex").toString()
+        }
 
 
 
@@ -143,7 +148,7 @@ class MoreActivity : AppCompatActivity() {
             composeEmail(email,getString(R.string.tl_email))
         }
         itm5LnkCnt.setOnClickListener {
-            openBrowser(urlTerms)
+            openBrowser(urlPlPv)
         }
 
 
@@ -173,9 +178,6 @@ class MoreActivity : AppCompatActivity() {
 
         }
     }
-
-
-
 
 
     private fun composeEmail(addresses: Array<String>, subject: String) {

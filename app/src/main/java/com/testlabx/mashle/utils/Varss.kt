@@ -3,6 +3,7 @@ package com.testlabx.mashle.utils
 
 import android.graphics.Color
 import android.util.Log
+import java.util.ArrayList
 
 
 class Varss {
@@ -12,8 +13,7 @@ class Varss {
     }
     companion object{
 
-        var pdIrts = false
-        var pdIrtsTp = ""
+        var pdAdWeb = false
 
         var dwCount = 0
 
@@ -25,19 +25,16 @@ class Varss {
 
         var crntFg = 0
 
-        var urlLs:ArrayList<String> = ArrayList()
-
-        var inHelp = false
-
         var crtnPlst = 0
 
-        var posIntent = 0
+        var mnList: ArrayList<PlsMn> = ArrayList()
+
+        var stBfAd = false
 
         fun restartVars(){
-            crtnPlst = 0
+            pdAdWeb = false
 
-            pdIrts = false
-            pdIrtsTp = ""
+            crtnPlst = 0
 
             dwCount = 0
 
@@ -49,8 +46,9 @@ class Varss {
 
             crntFg = 0
 
-            inHelp = false
+            mnList.clear()
 
+            stBfAd = false
 
         }
     }

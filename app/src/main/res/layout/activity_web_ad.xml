@@ -6,6 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".activitys.WebAdActivity">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnPsAdWeb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="13dp"
+        android:clickable="true"
+        android:scaleX="0.7"
+        android:scaleY="0.7"
+        app:backgroundTint="@color/color_primary"
+        app:layout_constraintBottom_toTopOf="@+id/btnClsAdWeb"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/exo_controls_pause"
+        app:tint="@android:color/white" />
+
     <WebView
         android:id="@+id/adWebView"
         android:layout_width="0dp"
@@ -16,26 +31,57 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/btnClsAdWeb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="20dp"
         android:clickable="true"
+        android:visibility="gone"
         app:backgroundTint="@color/color_primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/exo_ic_chevron_left" />
+        app:srcCompat="@drawable/ic_close"
+        app:tint="@android:color/white" />
 
     <TextView
         android:id="@+id/txCountAds"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="30dp"
-        android:text="0"
-        android:textSize="20sp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="sans-serif-black"
+        android:textColor="@color/color_primary"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ctnMsjAd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/ctn_bar"
+        android:elevation="6dp"
+        android:paddingStart="20dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/txCountAds">
+
+        <TextView
+            android:id="@+id/msjAd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.9"
+            android:text='Click en  " Saltar Publicidad "  ⬆'
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

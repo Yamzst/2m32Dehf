@@ -62,4 +62,8 @@ object DtList {
     fun setPos(idNw:String,newPos:Int){
         database!!.vidDao().setPos(idNw,newPos)
     }
+
+    fun rmvId(id:String){
+        database!!.vidDao().deleteId(id)
+    }
 }

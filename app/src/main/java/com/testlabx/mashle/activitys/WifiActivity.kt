@@ -19,27 +19,14 @@ class WifiActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wifi)
 
-        NetworkConnection.initialize(this)
+        //NetworkConnection.initialize(this)
         lifecycleScope.launchWhenStarted {
             NetworkConnection.isConnected.collect { isConnected ->
                 if (isConnected){
-                    //play video no necesario
                     finish()
-
                 }
-
             }
         }
-
-
-
-
-
-
-
-
-
-
 
     }
 

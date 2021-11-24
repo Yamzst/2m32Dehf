@@ -13,8 +13,7 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
         when{
             p0.data.containsKey("ntPlst") ->{
                 //key = "ntPlst"
-                //si esta en la app no va a recibir playlist
-                //
+                //si esta en la app, no playlist
             }
             p0.data.containsKey("ntBasic") ->{
                 key = "ntBasic"

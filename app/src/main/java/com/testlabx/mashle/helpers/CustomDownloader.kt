@@ -13,8 +13,6 @@
     along with AbleMusicPlayer.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-//LEER LICENCIA AQUIIII
-
 package com.testlabx.mashle.helpers
 
 import okhttp3.OkHttpClient
@@ -29,12 +27,6 @@ import java.util.concurrent.TimeUnit
 
 class CustomDownloader private constructor(builder: OkHttpClient.Builder) : Downloader() {
     private val client: OkHttpClient = builder.readTimeout(30, TimeUnit.SECONDS).build()
-
-    ////
-    //LEER LICENCIA AQUIIII
-    ///
-
-    //esta arriba
 
     @Throws(IOException::class, ReCaptchaException::class)
     override fun execute(request: Request): Response {

@@ -7,8 +7,6 @@ import androidx.room.PrimaryKey
 
 data class PlsMn(
    var title: String = "",
-
    var url: String = "",
-
 ) {
 }

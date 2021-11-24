@@ -9,15 +9,17 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.testlabx.mashle.R
+import com.testlabx.mashle.helpers.Constants
+import com.testlabx.mashle.helpers.FirebaseEvent
 import com.testlabx.mashle.utils.tintBarsTransparent
 import com.testlabx.mashle.utils.tintUi
 import kotlinx.android.synthetic.main.activity_update.*
 import java.util.*
 
 class UpdateActivity : AppCompatActivity() {
-    private var updtFor =  false
 
-    private val anlts = FirebaseAnalytics.getInstance(this)
+    private var updtFor =  false
+    var updtUrl = Constants.UPD_URL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,13 +37,17 @@ class UpdateActivity : AppCompatActivity() {
         }
 
 
-        val updtUrl = intent.getStringExtra("updtUrl")
+        if (intent.getStringExtra("updtUrl").toString() != ""){
+            updtUrl = intent.getStringExtra("updtUrl").toString()
+        }
+
+
 
         updt_btn.setOnClickListener {
-            if (updtUrl != "" && updtUrl!!.contains("https://")){
+            if (updtUrl.contains("https://")){
                 val intentNavegador = Intent(Intent.ACTION_VIEW, Uri.parse(updtUrl))
                 startActivity(intentNavegador)
-                sendEvent("clkBtnUpdt","day", dayOfWeek().toString())
+                FirebaseEvent.send("clkBtnUpdt","day", dayOfWeek().toString())
             }
         }
 
@@ -50,11 +56,6 @@ class UpdateActivity : AppCompatActivity() {
     }
 
 
-    fun sendEvent(nmE:String,key:String,value:String){
-        val bundle = Bundle()
-        bundle.putString(key, value)
-        anlts.logEvent(nmE, bundle)
-    }
 
     private fun dayOfWeek(): Int {
         return Calendar.getInstance().get(Calendar.DAY_OF_WEEK)

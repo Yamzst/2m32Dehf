@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-android-extensions'
     id 'kotlin-kapt'
     id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -68,19 +69,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation 'com.google.firebase:firebase-config-ktx'
-
-
-    // Vungle SDK
-    implementation 'com.vungle:publisher-sdk-android:6.10.2'
-
-    // Recommended for SDK to be able to get Android Advertising ID
-    implementation 'com.google.android.gms:play-services-basement:17.6.0'
-    implementation 'com.google.android.gms:play-services-ads-identifier:17.0.1'
-
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
 
     implementation 'com.startapp:inapp-sdk:4.8.+'
-
-
+    
     implementation 'com.squareup.okhttp3:okhttp:4.9.1'
 
     implementation 'com.github.TeamNewPipe:NewPipeExtractor:v0.21.10'

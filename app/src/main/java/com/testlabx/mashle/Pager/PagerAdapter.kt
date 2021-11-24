@@ -9,16 +9,15 @@ import com.testlabx.mashle.fragments.ShowFragment
 
 class PagerAdapter(fa:FragmentActivity):FragmentStateAdapter(fa) {
     val hashMap: HashMap<Int, Fragment> = HashMap()
-    override fun getItemCount(): Int = App.getMainActivity()?.simpleExoPlayer!!.mediaItemCount///Varss.idsN//Varss.urlLs.size
+
+    override fun getItemCount(): Int = App.getMainActivity()?.simpleExoPlayer!!.mediaItemCount
 
     override fun createFragment(position: Int): Fragment {
         val fragment = ShowFragment()
         fragment.arguments = Bundle().apply {
-            // Our object is just an integer :-P
             putInt("pgx", position + 1)
         }
         hashMap[position] = fragment
         return fragment
-        //return ShowFragment()
     }
 }

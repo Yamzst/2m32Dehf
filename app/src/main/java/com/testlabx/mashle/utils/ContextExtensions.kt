@@ -39,38 +39,15 @@ import android.graphics.Color
 
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import com.testlabx.mashle.getColor.MediaNotificationProcessor
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-fun Activity.setTransparentStatusBar() {
-    //window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-    //window.statusBarColor = Color.TRANSPARENT
-}
-
-
-
-fun Context.toast(message: Any?, length: Int = Toast.LENGTH_SHORT, centre: Boolean = true) {
-    Toast.makeText(this, message?.toString(), length).apply {
-        if (centre) {
-            val v: TextView? = this.view?.findViewById(android.R.id.message)
-            v?.gravity = Gravity.CENTER
-        }
-    }.show()
-}
-
-
-fun Context.btnHome(){
-    val intentNavegador = Intent(Intent.ACTION_MAIN)
-    intentNavegador.addCategory(Intent.CATEGORY_HOME)
-    //startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    startActivity(intentNavegador)
-}
-
-
 fun Context.openBrowser(urlForBrowser:String){
-    val intentNavegador = Intent(Intent.ACTION_VIEW, Uri.parse(urlForBrowser))
-    startActivity(intentNavegador)
+    if (urlForBrowser != ""){
+        val intentNavegador = Intent(Intent.ACTION_VIEW, Uri.parse(urlForBrowser))
+        startActivity(intentNavegador)
+    }
+
 
 }
 
@@ -83,7 +60,6 @@ fun Context.uiMode():Boolean{
     }
 
 }
-
 
 
 fun Activity.tintUi(){
@@ -145,7 +121,8 @@ fun Context.getBtmGld(tlNt: String, ctnNt: String, dtNt: String, imgNt: String, 
             override fun onLoadCleared(placeholder: Drawable?) {}
 
             override fun onLoadFailed(errorDrawable: Drawable?) {
-                val img = BitmapFactory.decodeResource(resources,R.drawable.ic_nott)
+                val img = BitmapFactory.decodeResource(resources,R.drawable.ic_ntf)
+
                 showNotify(tlNt, ctnNt, dtNt, img, type,Constants.CHANNELID)
             }
         })
@@ -192,111 +169,22 @@ fun Context.sharedApp(url:String){
     val shareIntent = Intent.createChooser(sendIntent, null)
     startActivity(shareIntent)
 
-    Handler(Looper.getMainLooper()).postDelayed({
-        //App.getMainActivity()?.appOpen = true
-    }, 10)
 }
 
-fun ImageView.fromUrl(url:String){
-    //Picasso.get().load("https://img.youtube.com/vi/${url}/mqdefault.jpg").into(this)
-    Glide.with(this).load("https://img.youtube.com/vi/${url}/sddefault.jpg").error(R.drawable.er_glide).into(this)
 
-    //maxresdefault  //hq720  //sddefault  //hqdefault   //mqdefault
-
-    /*Glide.with(this)
-        .asBitmap()
-        .load("https://img.youtube.com/vi/${url}/sddefault.jpg")
-        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-        .override(240, 135)
-        .dontAnimate()
-        .into(object : CustomTarget<Bitmap>() {
-            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                Log.i("tsimgca","resource")
-                this@fromUrl.setImageBitmap(resource)
-            }
-            override fun onLoadCleared(placeholder: Drawable?) {
-                Log.i("tsimgca","loadcleare")
-            }
-
-            override fun onLoadFailed(errorDrawable: Drawable?) {
-                //val img = BitmapFactory.decodeResource(resources,R.drawable.ic_nott)
-                Glide.with(this@fromUrl).load("https://img.youtube.com/vi/${url}/hqdefault.jpg").into(this@fromUrl)
-                Log.i("tsimgca","error $url")
-            //showNotify(tlNt, ctnNt, dtNt, img, type)
-            }
-        })*/
-}
 
 fun View.AnimView(){
     //setColorFilter(R.color.purple_500)
     //imageTintList = ColorStateList.valueOf(R.color.teal_200)
     animate()
-        .alpha(1f)
-        .setDuration(200)
+        .alpha(0.7f)
+        .setDuration(250)
         .setListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
-                alpha = 0.7f
+                alpha = 1f
             }
         })
 
-
-
-    /*
-    (object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
-                visibility = View.GONE
-            }
-        })
-     */
-
-}
-
-
-fun getColorBtns(id:String,context:Context,img:ImageView,completion: (clrFg:Int,clrBg:Int) -> Unit){
-
-    Glide.with(App.AppContext)
-        .asBitmap()
-        .load("https://img.youtube.com/vi/$id/mqdefault.jpg")
-        .error(R.drawable.er_glide)
-        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-        .override(320, 180)
-        .dontAnimate()
-        .into(object : CustomTarget<Bitmap>(){
-            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-
-                img.setImageBitmap(resource)
-
-                val processor = MediaNotificationProcessor(context, resource)
-                val clrBg: Int = processor.backgroundColor
-                val clrFg: Int = processor.primaryTextColor
-                completion(clrFg,clrBg)
-                //val secondaryTextColor: Int = processor.secondaryTextColor
-                //val isLight: Boolean = processor.isLight
-                //tintUi(clrFg,clrBg)
-
-                // for async processing:
-                //val processor = MediaNotificationProcessor(this)
-                //processor.getPaletteAsync(onPaletteLoadedListener, attr.bitmap)
-            }
-            override fun onLoadCleared(placeholder: Drawable?) {}
-
-            override fun onLoadFailed(errorDrawable: Drawable?) {}
-        })
-
-}
-
-
-
-
-
-
-fun ImageView.ImageTint(clr:Int){
-    imageTintList = ColorStateList.valueOf(clr)
-}
-
-
-fun ImageButton.BgTint(clr:Int){
-    backgroundTintList = ColorStateList.valueOf(clr)
 }
 
 fun Activity.btnHome(){
@@ -304,14 +192,6 @@ fun Activity.btnHome(){
     intentNavegador.addCategory(Intent.CATEGORY_HOME)
     //startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     startActivity(intentNavegador)
-}
-
-
-fun Activity.hideKeyboard(view: View) {
-    (getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager)
-        .hideSoftInputFromWindow(view.windowToken, 0)
-    //view.clearFocus()
-
 }
 
 

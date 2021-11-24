@@ -42,7 +42,6 @@ class App : Application() {
                 mWiFiLock?.release()
             }
             if(reaquire){
-
                 mWakeLock?.acquire(600000)
                 mWiFiLock?.acquire()
             }

@@ -2,6 +2,7 @@ package com.testlabx.mashle.helpers
 
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
@@ -11,6 +12,8 @@ import com.testlabx.mashle.BuildConfig
 import com.testlabx.mashle.utils.Intentsx
 import com.testlabx.mashle.utils.NetworkConnection
 import com.testlabx.mashle.utils.Utilsx
+import com.testlabx.mashle.utils.Varss
+import org.schabi.newpipe.extractor.stream.StreamInfoItem
 
 object FirebaseRC {
 
@@ -20,43 +23,46 @@ object FirebaseRC {
     const val KY_MSJ = "msj"
     const val KY_URL_MSJ = "urlMsj"
     const val KY_DS_NTV = "dsNtv"
+    const val KY_DS_ITR = "dsItr"
     const val KY_DS_BNR = "dsBnr"
-    const val KY_DS_ITR = "dsIrt"
     const val KY_DS_ADS_WB = "dsAdsWb"
+    const val KY_TM_AD = "tmAd"
     const val KY_URL_STORE = "urlStore"
     const val KY_APP_CLS = "closet"
-
 
 
     var updt = false
     var updtMsjSh = 0
 
-
     var vrApp = 1
     var urlUpdt = ""
-    var urlStore = "https://ston-app.web.app/"
+    var urlStore = ""
     var svLstMsj = ""
 
     var dsBnr = 0 //1 dsStarApp // 2 dsVungle
-    var dsIrt = 0 //1 dsStarApp // 2 dsVungle
     var dsNtv = 0
+    var dsItr = 0
+    var dsAdWeb = false
+
+    var tmAd = 5
 
     var obDt = false
 
     fun resetVars(){
-        //IMPORTANTE
-        //VERDICAR QUE ESTEN TODOS LOS VARS
         updt = false
         updtMsjSh = 0
 
         vrApp = 1
         urlUpdt = ""
-        urlStore = "https://ston-app.web.app/"
+        urlStore = ""
         svLstMsj = ""
 
         dsBnr = 0 //1 dsStarApp // 2 dsVungle
-        dsIrt = 0 //1 dsStarApp // 2 dsVungle
         dsNtv = 0
+        dsItr = 0
+        dsAdWeb = false
+
+        tmAd = 5
 
         obDt = false
 
@@ -77,7 +83,6 @@ object FirebaseRC {
         remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
             if (task.isSuccessful){
                 setConfigCloud()
-                Log.i("TestRmt","Obtuvo isSuccessful + ${task.exception}")
                 obDt = true
             }else{
                 setConfigCloud()
@@ -85,6 +90,7 @@ object FirebaseRC {
                     obDt = false
                 }else{
                     if (task.exception != null){
+
                         val msRmtE = task.exception.toString()
                         if (msRmtE.contains(":")){
                             val ms = msRmtE.split(":").toTypedArray()
@@ -95,7 +101,7 @@ object FirebaseRC {
 
                     }
                 }
-                Log.i("TestRmt","Obtuvo No isSuccessful + ${task.exception}")
+                Log.i("TestRmt","No isSuccessful + ${task.exception}")
 
             }
 
@@ -109,21 +115,24 @@ object FirebaseRC {
 
 
     fun setConfigCloud(){
+
         val remoteConfig = Firebase.remoteConfig
 
-        val vrAppx = remoteConfig.getLong(KY_VR_APP).toInt()
+        vrApp = remoteConfig.getLong(KY_VR_APP).toInt()
         val typex = remoteConfig.getString(KY_TYPE_UPD)
-        val urlx = remoteConfig.getString(KY_URL_UPD)
+        urlUpdt = remoteConfig.getString(KY_URL_UPD)
 
         val msjx = remoteConfig.getString(KY_MSJ)
         val urlMsj = remoteConfig.getString(KY_URL_MSJ)
 
-        val dsNtvx = remoteConfig.getLong(KY_DS_NTV).toInt()
-        val dsBnrx = remoteConfig.getLong(KY_DS_BNR).toInt()
-        val dsIrtx = remoteConfig.getLong(KY_DS_ITR).toInt()
-        val dsAdsWbx = remoteConfig.getLong(KY_DS_ADS_WB).toInt()
+        dsNtv = remoteConfig.getLong(KY_DS_NTV).toInt()
+        dsItr = remoteConfig.getLong(KY_DS_ITR).toInt()
+        dsBnr = remoteConfig.getLong(KY_DS_BNR).toInt()
+        dsAdWeb = remoteConfig.getBoolean(KY_DS_ADS_WB)
 
-        val urlStorex = remoteConfig.getString(KY_URL_STORE)
+        tmAd = remoteConfig.getLong(KY_TM_AD).toInt()
+
+        urlStore = remoteConfig.getString(KY_URL_STORE)
         val appCloset = remoteConfig.getBoolean(KY_APP_CLS)
 
 
@@ -140,31 +149,32 @@ object FirebaseRC {
         val plsMn9 = remoteConfig.getString("plsMn9")
 
 
-        Log.i("TestRmt", "$vrAppx| $typex | $urlx | $msjx | $urlMsj | $dsNtvx | $dsBnrx | $dsIrtx | $urlStorex | $appCloset")
-        Log.i("TestRmt", "Se Obtuvo")
+        val pgAd1 = remoteConfig.getString("pgAd1")
+        val pgAd2 = remoteConfig.getString("pgAd2")
+        val pgAd3 = remoteConfig.getString("pgAd3")
+        val pgAd4 = remoteConfig.getString("pgAd4")
+        val pgAd5 = remoteConfig.getString("pgAd5")
 
-        vrApp = vrAppx
-        urlUpdt = urlx
+
 
         if (appCloset) {
             App.getMainActivity()?.finish()
         }
 
 
-        //updt = true
+
         updtMsjSh = App.getMainActivity()?.getUpdMsSh()!!
 
-        if (vrAppx != BuildConfig.VERSION_CODE) {
+        if (vrApp != BuildConfig.VERSION_CODE) {
             updt = true
             if (typex == "A"){
-                if (updtMsjSh != vrAppx){
-                    App.getMainActivity()?.putUpdMsSh(vrAppx)
-                    App.getMainActivity()?.updt(typex, urlx)
-                    //put y get antes updtMsjShow
+                if (updtMsjSh != vrApp){
+                    App.getMainActivity()?.putUpdMsSh(vrApp)
+                    App.getMainActivity()?.updt(typex, urlUpdt)
                 }
 
             }else{
-                App.getMainActivity()?.updt(typex, urlx)
+                App.getMainActivity()?.updt(typex, urlUpdt)
             }
         }
 
@@ -174,56 +184,39 @@ object FirebaseRC {
         }
 
 
-        if (urlStorex != ""){
-            urlStore = urlStorex
-        }
+
+        if (Intentsx.valuex.contains(" /--/ ")) Utilsx.splitString(Intentsx.valuex, Varss.mnList)
 
 
-        //if (dsAdsWbx)
-        //set ads webview
-
-
+        Utilsx.getQrsFromSt(plsMn1,plsMn2,plsMn3, Varss.mnList)
+        Utilsx.getQrsFromSt(plsMn4,plsMn5,plsMn6, Varss.mnList)
+        Utilsx.getQrsFromSt(plsMn7,plsMn8,plsMn9, Varss.mnList)
 
         //ADS
-
         // 0 -> ds Ninguno
         // 1 -> ds startApp  2 -> ds Vungle
         // 3 -> ds Ambos
 
-        dsIrt = dsIrtx
-        dsBnr = dsBnrx
-        dsNtv = dsNtvx
 
-        if (dsIrtx != 3 || dsBnrx != 3 || dsNtvx != 3){
+        //////////
+        App.getMainActivity()?.addTabs()
 
-
-            if (dsIrtx != 1 || dsBnrx != 1 || dsNtvx != 1) {
-                App.getMainActivity()?.initStarApp()
-            }
-
-            if (dsIrtx != 2 || dsBnrx != 2 || dsNtvx != 2) {
-                App.getMainActivity()?.initVungle()
-            }
-
-
-            if (Intentsx.valuex.contains(" /--/ ")) Utilsx.splitString(Intentsx.valuex, App.getMainActivity()?.mnList!!)
-
-            Utilsx.getQrsFromSt(plsMn1,plsMn2,plsMn3, App.getMainActivity()?.mnList!!)
-            Utilsx.getQrsFromSt(plsMn4,plsMn5,plsMn6, App.getMainActivity()?.mnList!!)
-            Utilsx.getQrsFromSt(plsMn7,plsMn8,plsMn9, App.getMainActivity()?.mnList!!)
-            //App.getMainActivity()?.newQuery(App.getMainActivity()?.mnList!![0].url)
-            App.getMainActivity()?.addTabs()
-
-
-
-
-            //when (dsBnrx){0,2 -> App.getMainActivity()?.setBnrAds() }
-            //un segundo para que se inicie vungle
-            //if (dsBnrx != 3) App.getMainActivity()?.setBnrAds()
-
-            App.getMainActivity()?.initItrs(0) //test
-
+        App.getMainActivity()?.adList!!.apply {
+            //if (pgAd1 != "") add(pgAd1)
+            if (pgAd2 != "") add(pgAd2)
+            if (pgAd3 != "") add(pgAd3)
+            if (pgAd4 != "") add(pgAd4)
+            if (pgAd5 != "") add(pgAd5)
         }
+
+        if (!dsAdWeb) App.getMainActivity()?.initAdWb()
+
+        if (dsBnr != 1 || dsNtv != 1 || dsItr != 1) {
+            //if se pone 3 a todos, igual se inicia
+            App.getMainActivity()?.initStarApp()
+        }
+
+        if (dsBnr == 3 || dsBnr == 1) App.getMainActivity()?.hideBnr() else App.getMainActivity()?.initStarAppBanner()
 
 
     }
@@ -235,16 +228,15 @@ object FirebaseRC {
 
         /*val configSettings = remoteConfigSettings {
             minimumFetchIntervalInSeconds = 60//172800
-
         }*/ //cd 12h por default
 
         val firebaseConfig = Firebase.remoteConfig
         //firebaseConfig.setConfigSettingsAsync(configSettings)
         firebaseConfig.setDefaultsAsync(mapOf(
-            KY_VR_APP to 1, KY_URL_UPD to "https://ston-app.web.app/", KY_TYPE_UPD to "A",
+            KY_VR_APP to 1, KY_TYPE_UPD to "A", KY_URL_UPD to Constants.UPD_URL,
             KY_MSJ to "", KY_URL_MSJ to "",
-            KY_DS_ITR to 0, KY_DS_NTV to 0, KY_DS_BNR to 0,
-            KY_URL_STORE to "https://ston-app.web.app/", KY_APP_CLS to false))
+            KY_DS_NTV to 0, KY_DS_ITR to 0, KY_DS_BNR to 0, KY_DS_ADS_WB to false, KY_TM_AD to 5,
+            KY_URL_STORE to Constants.UPD_URL, KY_APP_CLS to false))
     }
 
 

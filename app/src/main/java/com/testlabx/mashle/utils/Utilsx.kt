@@ -26,21 +26,13 @@ object Utilsx {
        splitString(st2,qrs)
        splitString(st3,qrs)
 
-
-       //ADD
-       //IF ADDS ESTAN ACTIVADOS
-       /*if (FirebaseRC.dsNtv != 1 && FirebaseRC.dsNtv != 3){
-           qrs.add(PlsMn("","",""))
-       }*/
-
-
     }
 
 
     fun splitString(st:String,qrs:ArrayList<PlsMn>){
         if (st.contains(" /--/ ")){
-            val pSt = st.split(" /--/ ").toTypedArray()
 
+            val pSt = st.split(" /--/ ").toTypedArray()
             val nwPls = PlsMn(pSt[0],pSt[1])
             qrs.add(nwPls)
 
@@ -48,23 +40,6 @@ object Utilsx {
 
     }
 
-
-    fun dayOfWeek(): Int {
-        val day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
-        println(
-            when (day) {
-                1 -> "Sunday"
-                2 -> "Monday"
-                3 -> "Tuesday"
-                4 -> "Wednesday"
-                5 -> "Thursday"
-                6 -> "Friday"
-                7 -> "Saturday"
-                else -> "Time has stopped"
-            }
-        )
-        return day
-    }
 
     fun createNotificationChannel(ctn:Context,chId:String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -80,15 +55,12 @@ object Utilsx {
     }
 
 
-
-
     fun cleanTitle(tl:String):String{
         var newTl = if (tl.contains("(")){
             tl.replace("\\(.*\\)".toRegex(), "").trim()
         }else{
             tl
         }
-
         return newTl
     }
 
@@ -97,26 +69,6 @@ object Utilsx {
         return link.run {
             substring(lastIndexOf("=") + 1)
         }
-    }
-
-
-    //dw
-
-    fun createFile(context: Context,tp:String,nm:String):File{
-        val tmpFileDw = File.createTempFile("vid", null, context.applicationContext.externalCacheDir)
-        tmpFileDw.delete()
-        tmpFileDw.mkdir()
-        tmpFileDw.deleteOnExit()
-        //hasta aui folder
-        ///Log.i(TAG, tmpFileDw.absolutePath)
-        val dwFile =  if (tp == "video"){
-            File(tmpFileDw, "$nm.mp4")
-        }else{
-            File(tmpFileDw, "$nm.m4a")
-        }
-
-        return dwFile
-
     }
 
 

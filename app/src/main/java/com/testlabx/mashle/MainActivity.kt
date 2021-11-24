@@ -2,28 +2,22 @@ package com.testlabx.mashle
 
 
 import android.content.*
+
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.Rect
 import android.graphics.drawable.Animatable
 import android.media.MediaMetadataRetriever
 import android.os.*
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import com.startapp.sdk.ads.banner.Banner
 import com.startapp.sdk.ads.banner.BannerListener
-import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener
 import com.startapp.sdk.adsbase.adlisteners.AdEventListener
-import com.startapp.sdk.adsbase.model.AdPreferences
-import com.vungle.warren.*
-import com.vungle.warren.error.VungleException
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.flow.collect
 import org.schabi.newpipe.extractor.NewPipe
-import org.schabi.newpipe.extractor.localization.Localization
 import java.util.*
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -49,62 +43,43 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.schabi.newpipe.extractor.stream.StreamInfo
 import org.schabi.newpipe.extractor.stream.StreamInfoItem
-import com.google.android.material.tabs.TabLayout
-
 import android.widget.Toast
 import com.google.android.exoplayer2.MediaItem
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import android.widget.RelativeLayout
-import androidx.media.session.MediaButtonReceiver
 import com.bumptech.glide.Glide
-import com.startapp.sdk.ads.nativead.NativeAdDetails
+import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.native_ad.*
 import org.schabi.newpipe.extractor.ServiceList
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.audio.AudioAttributes
+import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener
+import com.startapp.sdk.adsbase.model.AdPreferences
 
 
 class MainActivity : AppCompatActivity() {
 
-
-    var mnList: ArrayList<PlsMn> = ArrayList()
+    val TAGFN = "tsFinalx"
+    var adList: ArrayList<String> = ArrayList()
 
     var idsList: ArrayList<String> = ArrayList()
-    var colaVid: ArrayList<String> = ArrayList()
     val imgList: HashMap<Int, Bitmap> = HashMap()
 
-    val TAG = "tsFinx"
-
     private var pagerAdapter: PagerAdapter? = null
-    var currentFg:ShowFragment? = null
     lateinit var simpleExoPlayer: SimpleExoPlayer
 
     private lateinit var storage: SharedPreferences
     private var svFrzCnt = 1
 
-    var internet = true
-
-    val startAppAd = StartAppAd(this)
     var startAppBanner:Banner? = null
+    val startAppAd = StartAppAd(this)
     private val adPrederence = AdPreferences().muteVideo()
 
-    var vungleBanner: VungleBanner? = null
-    val adcfg = AdConfig()
-
-
-    val tmrCntIrts = Handler(Looper.getMainLooper())
-    val tmrIrts = Handler(Looper.getMainLooper())
-
+    val tmrCntAdWb = Handler(Looper.getMainLooper())
+    val tmrAdWb = Handler(Looper.getMainLooper())
 
     var searchError = false
     var idTx = 0
-
-
-    private var serviceToMainActivityCallback: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-
-        }
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_Mashle)
@@ -123,25 +98,24 @@ class MainActivity : AppCompatActivity() {
         Varss.restartVars()
         FirebaseRC.resetVars()
 
-        //iniciar en intenet conection..entonces si nohya al ingresar y luego viene iniviar esta vez con intenet
-        Log.i("initnew","inicio")
-        NewPipe.init(CustomDownloader.getInstance(),Localization("es","PE"))
-        Log.i("initnew","finn")
+        //NewPipe.init(CustomDownloader.getInstance(),Localization("es","PE"))
+        NewPipe.init(CustomDownloader.getInstance())
 
-        /*GlobalScope.launch(Dispatchers.IO) {
-        //colocar try cath x q si no hay interner se bloque la app
-            val st = StreamInfo.getInfo("https://m.youtube.com/watch?v=QaXhVryxVBk")
-            val vdSt = st.videoStreams
-            Log.i("sdfvf",vdSt[0].url)
-        }*/
-
-
-        //CONSTRUIR CON CONTEXT DE APPLICAICON APP.CONTEXT
-        simpleExoPlayer = SimpleExoPlayer.Builder(this).build()
+        simpleExoPlayer = SimpleExoPlayer.Builder(App.AppContext).build() //this
         simpleExoPlayer.repeatMode = Player.REPEAT_MODE_ONE
         simpleExoPlayer.playWhenReady = true
+        simpleExoPlayer.setWakeMode(C.WAKE_MODE_NETWORK)
+        //playerView.requestFocus()
         //playerView.hideController()
         //playerView.controllerAutoShow = false
+
+
+        val audioAttributes: AudioAttributes = AudioAttributes.Builder()
+            .setUsage(C.USAGE_MEDIA)
+            .setContentType(C.CONTENT_TYPE_MUSIC)
+            .build()
+        simpleExoPlayer.setAudioAttributes(audioAttributes,true)
+
 
         //cuidado se valla a a llamar a end iniciando ...colocar despues de prepare
         simpleExoPlayer.addListener(playbackStateListener())
@@ -160,12 +134,9 @@ class MainActivity : AppCompatActivity() {
             1 ->{
                 Utilsx.createNotificationChannel(this,Constants.CHANNELID)
                 FirebaseRC.settingsRmtCnfg()
-
-                val intent_help = Intent(this@MainActivity, HelpActivity::class.java)
-                startActivity(intent_help)
-
+                storage.edit().putInt(Constants.SV_FRZ_CNT,2).apply()
             }
-            2 ->{ }
+            2 ->{}
         }
 
 
@@ -176,16 +147,6 @@ class MainActivity : AppCompatActivity() {
 
         //GET CONFIG CLOUD
         internetState()
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            //if (!Vungle.isInitialized() && internet){
-            //  initVungle()
-            //  FirebaseEvent.send("VgNnt","","")
-            //}
-        }, 10000)
-
-        adcfg.setMuted(true)
-        adcfg.adOrientation = AdConfig.PORTRAIT
 
 
         btnCfg.setOnClickListener {
@@ -205,30 +166,30 @@ class MainActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
 
                 showBg(true)
-                //mostrar load
-                //en ready ocultar
+
                 Varss.crntFg = position
                 val fg = pagerAdapter!!.hashMap[viewPager.currentItem] as ShowFragment?
                 fg?.setPlayer()
 
-                Log.i(TAG,"${simpleExoPlayer.mediaItemCount} numero de mediaItems")
-
                 simpleExoPlayer.playWhenReady = true
                 simpleExoPlayer.seekTo(position,0)
 
-                if (position < Varss.idsN - 1) getNewUrl(position + 1,Varss.crtnPlst)
-                if (position < Varss.idsN - 2) getNewUrl(position + 2,Varss.crtnPlst)
-                if (position < Varss.idsN - 3) getNewUrl(position + 3,Varss.crtnPlst)
-                if (position < Varss.idsN - 4) getNewUrl(position + 4,Varss.crtnPlst)
-                if (position < Varss.idsN - 5) getNewUrl(position + 5,Varss.crtnPlst)
-                if (position < Varss.idsN - 6) getNewUrl(position + 6,Varss.crtnPlst)
-                if (position < Varss.idsN - 7) getNewUrl(position + 7,Varss.crtnPlst)
+                if (position % 4 == 0) {
+                    Log.i("tsVidxo", "$position")
+                    if (idsList.size != 0) {
+                        //var n = if (idsList.size % 7 == 0) 7 else idsList.size % 7
+                        for (x in 0..7) { //position  //idsList.size
+                            if (x < idsList.size) {
+                                getNewUrl(idsList[x], Varss.crtnPlst)
+                            }
+                        }
 
-                if (position == Varss.idsN - 1) Toast.makeText(this@MainActivity, "final", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                //getNewUrl(idsList[1], Varss.crtnPlst)
 
-                //add
-                //loadNativeAd()
-                AdControler.showAdItrs()
+
+                AdControler.showAdWeb()
 
                 if (position == Varss.idsN - 1){
                     icUp.visibility = View.VISIBLE
@@ -240,46 +201,53 @@ class MainActivity : AppCompatActivity() {
         })
 
         tabLayout.removeAllTabs()
-        tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
 
+                AdControler.showAdWeb()
+                AdControler.showAdNat()
+
                 Varss.crtnPlst = tab.position
-                newQuery(mnList[tab.position].url)
+                Log.i(TAGFN,"newQuery")
+                newQuery(Varss.mnList[tab.position].url)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
 
-
         showBg(true)
-        //newQuery("PLeyDm-yUdpqAJ6SuROS9M8uEx-vrcF_73")
+
 
         GlobalScope.launch(Dispatchers.IO) {
-            val extractor =
-                ServiceList.YouTube.getSearchExtractor("estados para whatsapp  after:2021-11-05")
-            extractor.fetchPage()
-            for (song in extractor.initialPage.items) {
-                val ex = song as StreamInfoItem
-                Log.i("tsSrchxYt1", ex.name)
-            }
+            val idVid = "INEbRe0MWf4"
+            try {
+                Log.i(TAGFN,"item ts1 finishAAA")
+                val st = StreamInfo.getInfo("https://m.youtube.com/watch?v=${idVid}")
+                Log.i(TAGFN,"item ts1 finishBBB")
+                val vdSt = st.name
 
-            Log.i("tsSrchxYt1", "----------------------------------------")
+                Log.i(TAGFN,"item ts1 $vdSt")
 
-            val extractor2 = ServiceList.YouTube.getSearchExtractor(
-                "estados para whatsapp  after:2021-11-05",
-                Collections.singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_VIDEOS),
-                ""
-            )
-            extractor2.fetchPage()
-            for (song in extractor2.initialPage.items) {
-                val ex = song as StreamInfoItem
-                Log.i("tsSrchxYt2", ex.name)
+            }catch (e:Exception){
+                launch(Dispatchers.Main) {
+                    Toast.makeText(this@MainActivity, "errorr", Toast.LENGTH_SHORT).show()
+                }
+                return@launch
+
+            }finally {
+                //VID ya no enquee
             }
         }
 
 
+    }
 
+
+    fun addTabs(){
+        Varss.mnList.forEach {
+            tabLayout.addTab(tabLayout.newTab().setText(it.title))
+        }
     }
 
     fun newQuery(qrx:String) {
@@ -303,41 +271,31 @@ class MainActivity : AppCompatActivity() {
         }
         searchError = false
 
-
-        if (Varss.pdIrts) AdControler.showAdItrs() else loadNativeAd()
-
-
     }
 
 
 
     fun searchQr(qrx:String,tp:String){
+        Log.i(TAGFN,"serachQr")
 
         GlobalScope.launch(Dispatchers.IO) {
 
+            DtList.database?.vidDao()?.deleteAll()
+            imgList.clear()
+            idsList.clear()
+            Varss.idsN = 0
+            launch(Dispatchers.Main) {
+                simpleExoPlayer.clearMediaItems()
+            }
+
             try {
 
-                var cl = false
-                if (!cl){
-                    //esto puede ir afuera del for
-                    DtList.database?.vidDao()?.deleteAll()
-                    imgList.clear()
-                    colaVid.clear()
-                    idsList.clear()
-                    launch(Dispatchers.Main) {
-                        simpleExoPlayer.clearMediaItems()
-                    }
-
-                    cl = true
-                    Varss.idsN = 0
-                }
-
-                //var lst:StreamInfoItem
+                Log.i(TAGFN,"extractor init")
                  if (tp == "search"){
                      val extractor = ServiceList.YouTube.getSearchExtractor(qrx,
-                         Collections.singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_VIDEOS),
-                         "")
+                         Collections.singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_VIDEOS), "")
                      extractor.fetchPage()
+
                      for (song in extractor.initialPage.items) {
 
                          val ex = song as StreamInfoItem
@@ -347,8 +305,8 @@ class MainActivity : AppCompatActivity() {
 
                          idsList.add(n)
                          Varss.idsN ++
-
                      }
+
                 }else{
                      val extractor = ServiceList.YouTube.getPlaylistExtractor(qrx)
                      extractor.fetchPage()
@@ -366,41 +324,25 @@ class MainActivity : AppCompatActivity() {
                 }
 
 
-
-                getNewUrl(0,Varss.crtnPlst)
+                Log.i(TAGFN,"extractorfinish")
+                getNewUrl(idsList[0],Varss.crtnPlst)
                 //lamar a mas aqui
 
-                Log.i("tsBonsel",DtList.database!!.vidDao().getAllUser().toString())
 
             } catch (e: Exception) {
-                Log.i("tsSearchx", e.toString())
-                Log.i("tsSearchx","error1")
                 showTxNoFound()
-                //(scOpBarSr.drawable as? Animatable)?.stop()
-                //scOpBarSr.visibility = View.GONE
-
                 searchError = true
-
-
 
             }
 
             if (!searchError){
 
-
-                Log.i("tsSearchx","setData")
                 launch(Dispatchers.Main) {
-
                     viewPager.visibility = View.VISIBLE
-                    //showBg(false)
-
                     pagerAdapter = PagerAdapter(this@MainActivity)
                     viewPager.adapter = pagerAdapter
 
-
                     Varss.frstDw = true
-
-                    //loadsd()
 
                 }
 
@@ -412,27 +354,28 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    fun getNewUrl(position:Int,pls:Int){
+    fun getNewUrl(id:String,pls:Int){
+        Log.i(TAGFN,"item $id init")
         GlobalScope.launch(Dispatchers.IO) {
-            //if plst != current plst return
 
-            val id = idsList[position]
+            //val id = idsList[position]
             //val vid = DtList.database!!.vidDao().getVidFromPos(position)
             //val id = vid.idVid
+
             val vid = DtList.database!!.vidDao().getVidFromId(id)
             val nexUrl = vid.urlVid
 
             //val nexUrl = DtList.database!!.vidDao().getUrlFromPos(position)
-            Log.i(TAG, "Vid = " + vid.nmVid)
 
-            if (nexUrl == "" && colaVid.indexOf(id) == -1){
-                colaVid.add(id)
+            if (nexUrl == "" && idsList.indexOf(id) != -1){
+                idsList.remove(id)
                 val urlAu:String
                 val nwUrl:String
                 try {
+                    Log.i(TAGFN,"item $id finishAAA")
 
                     val st = StreamInfo.getInfo("https://m.youtube.com/watch?v=${vid.idVid}")
-
+                    Log.i(TAGFN,"item $id finishBBB")
                     val vdSt = st.videoStreams
 
                     val auSt = st.audioStreams
@@ -451,39 +394,38 @@ class MainActivity : AppCompatActivity() {
                     launch(Dispatchers.Main) {
                         Toast.makeText(this@MainActivity, "errorr", Toast.LENGTH_SHORT).show()
                     }
+                    DtList.rmvId(id)
                     return@launch
+
                 }finally {
                     //VID ya no enquee
                 }
 
+                Log.i("tsVidx", "continuo ${vid.nmVid}")
                 ////val pos = Varss.listIds.indexOf(idNw)
 
-                if (pls != Varss.crtnPlst) return@launch
+                if (pls == Varss.crtnPlst) {
 
-                DtList.database!!.vidDao().setUrlVid(vid.idVid,nwUrl,urlAu)
+                    launch(Dispatchers.Main) {
+
+                        DtList.database!!.vidDao().setUrlVid(id, nwUrl, urlAu)
+
+                        dwImg(nwUrl, simpleExoPlayer.mediaItemCount)
+                        DtList.setPos(id, simpleExoPlayer.mediaItemCount)
+
+                        val mediaItem = MediaItem.fromUri(nwUrl)
+                        simpleExoPlayer.addMediaItem(simpleExoPlayer.mediaItemCount, mediaItem)//
+                        simpleExoPlayer.prepare()
 
 
-                launch(Dispatchers.Main) {
+                        pagerAdapter?.notifyDataSetChanged()
+                        Log.i(TAGFN,"item $id finish2")
 
-                    Log.i(TAG, "hay ${simpleExoPlayer.mediaItemCount} item media")
-
-                    dwImg(nwUrl,simpleExoPlayer.mediaItemCount)
-                    DtList.setPos(vid.idVid,simpleExoPlayer.mediaItemCount)
-
-                    val mediaItem = MediaItem.fromUri(nwUrl)
-                    simpleExoPlayer.addMediaItem(simpleExoPlayer.mediaItemCount,mediaItem)//
-                    simpleExoPlayer.prepare()
-
-                    pagerAdapter?.notifyDataSetChanged()
+                    }
 
                 }
 
-                //IMPORTANTE SI UN ENLACE NO SE HAÑADE PARA Q VUELVA A INTENTAR
-                //colaVid.remove(id)
-                Log.i(TAG,"Lego $position")
-            }else{
 
-                Log.i(TAG,"YA OBTUVOOOO $position")
             }
 
 
@@ -511,75 +453,37 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-    private fun getConfigCloud() {
-        FirebaseRC.fetch {
-        }
-
-    }
-
-
-    fun updt(tp: String, url: String) {
-        val intn_updt = Intent(this, UpdateActivity::class.java)
-        intn_updt.putExtra("updtUrl", url)
-        when (tp) {
-            "A" -> {
-                intn_updt.putExtra("updtTp", "A")
-            }
-            "B" -> {
-                intn_updt.putExtra("updtTp", "B")
-
-            }
-        }
-        startActivity(intn_updt)
-
-    }
-
-
-
     //Internet
     private fun internetState() {
-        Log.i("TestRmt","gintenetSate")
         var fv = true
         var initStApp = false
         NetworkConnection.initialize(this)
         lifecycleScope.launchWhenStarted {
             NetworkConnection.isConnected.collect {isConnected ->
                 if (isConnected) {
-                    internet = true
 
                     if (fv){
                         if (!FirebaseRC.obDt){
-                            //Varss.dsMr = true
                             getConfigCloud()
                         }
                         fv = false
                     }
 
-                    //Si vulge si se tiene qeu activar y no se inicializo inicializar
-                    /*if (!Vungle.isInitialized() && !fv){
-                    //initVungle()
-                    }
                     if (!initStApp){
                         initStarApp()
                         initStApp = true
-                    }*/
+                    }
 
 
                 }else{
-                    internet = false
-                    //se setearia cada vex q no halla hacer q sea solo una vez
-                    FirebaseRC.setConfigCloud()
+
+                    if (pagerAdapter != null){
+                        simpleExoPlayer.playWhenReady = false
+                    }
 
                     val intent = Intent(this@MainActivity, WifiActivity::class.java)
                     startActivity(intent)
 
-                    //WIFI
-                    //Detener video   -> SE TENDRIA Q REALIZAR SOLO CUANDO SE COMPLETE EL SET DEL PAYER
-                    //YA QUE EN ON STOP SE TENDRIA Q DETENER EL VIDEO
-                    //val intent = Intent(this@MainActivity, WifiActivity::class.java)
-                    //startActivity(intent)
-                    //fv = false
                 }
             }
         }
@@ -588,12 +492,6 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        Log.i("NewIntxa1", intent?.data.toString())
-        Log.i("NewIntxa2", intent?.getStringExtra(Intent.EXTRA_TEXT).toString())
-        Intentsx.New(intent)
-    }
 
 
     //ADSX
@@ -615,154 +513,41 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun initVungle(){
 
-        Vungle.init(Constants.ID_APP_VG, applicationContext, object : InitCallback {
-            override fun onSuccess() {
-                Log.i("testAds", "Vungle se inicio")
-                setBnrAds()
-            }
-
-            override fun onError(exception: VungleException?) {
-                setBnrAds()
-                Log.i("testAds", "Vungle NO inicio ${exception?.exceptionCode}")
-                FirebaseEvent.send("vgInitEr","er", exception?.exceptionCode.toString())
-            }
-            override fun onAutoCacheAdAvailable(placementId: String?) {
-                Log.i("testAds", "onAuto")
-            }
-        })
-
-    }
-
-    fun initItrs(dsItr:Int) {
-
-        tmrCntIrts.postDelayed({
-            if (dsItr != 3){
-                setItrAds(dsItr) //ini ad 1->vungle 2-<St
-            }
+    fun initAdWb() {
+        tmrCntAdWb.postDelayed({
+            setAdWeb()
         }, Constants.TM_AD_ITR)
 
     }
 
-    fun setItrAds(dsItr:Int) {
-        var crnAd = when(dsItr){
-            1 -> 2
-            2 -> 1
-            else -> 1
-        }
 
-        tmrIrts.post(object : Runnable {
+
+    fun setAdWeb() {
+        tmrCntAdWb.post(object : Runnable {
             override fun run() {
-
-                Toast.makeText(this@MainActivity, "Puede New Ad", Toast.LENGTH_SHORT).show()
-                if (internet){
-
-                    if (!Vungle.isInitialized() && dsItr != 2){
-                        crnAd = 2
-                    }
-
-                    Varss.pdIrts = true
-
-                    if (crnAd == 1) {
-
-                        Varss.pdIrtsTp = "vungle"
-                        if (dsItr!= 2) crnAd = 2
-
-                    } else {
-
-                        Varss.pdIrtsTp = "starApp"
-                        if (dsItr!= 1) crnAd = 1
-
-                    }
-
-                }
-
-
-                tmrIrts.postDelayed(this, Constants.TM_AD_ITR)
+                Varss.pdAdWeb = true
+                tmrCntAdWb.postDelayed(this, Constants.TM_AD_ITR)
             }
         })
     }
 
-    fun showIrts(){
-        if (Varss.pdIrtsTp == "vungle"){
-            initVungleInterstitial()
-        }else{
-            initStartAppInterstitial()
+    fun showAdWeb(){
+        if (NetworkConnection.isConnected.value){
+            val intent= Intent(this@MainActivity, WebAdActivity::class.java)
+            intent.putExtra("pgAd",adList.random())
+            startActivity(intent)
         }
     }
 
 
 
-    fun stopTmrItrs(){
-        tmrIrts.removeCallbacksAndMessages(null)
-        tmrCntIrts.removeCallbacksAndMessages(null)
+    fun stopTmrAdWeb(){
+        tmrAdWb.removeCallbacksAndMessages(null)
+        tmrCntAdWb.removeCallbacksAndMessages(null)
     }
 
 
-    fun initVungleInterstitial(){
-        Vungle.loadAd(Constants.ID_INT_VG, object : LoadAdCallback {
-            override fun onAdLoad(id: String) {
-
-                if (Vungle.canPlayAd(Constants.ID_INT_VG)) {
-                    Vungle.playAd(Constants.ID_INT_VG, adcfg, vunglePlayAdCallback("Itrs"))
-                }else{
-                    Log.i("testAds", "\n Interstitial no Play Ad")
-                }
-
-                Log.i("testAds", "\n Vungle interstitial onLoad")
-
-            }
-            override fun onError(id: String, e: VungleException) {
-                Log.i("testAds", "\n Vungle Interstitial error : ${e.localizedMessage} ")
-                FirebaseEvent.send("vgItrLdEr","er", e.exceptionCode.toString())
-            }
-        })
-    }
-
-    var stVidAdx = false
-    private fun initStartAppInterstitial(){
-
-        startAppAd.loadAd(adPrederence,object : AdEventListener {
-            override fun onReceiveAd(ad: Ad) {
-                //stVidAdx = mainWebView.currentIsPlaying
-                startAppAd.showAd(startAppAdCallback())
-                Log.i("testAds", "\n StartApp Receive Interstitial")
-
-            }
-            override fun onFailedToReceiveAd(ad: Ad) {
-                Log.i("testAds", " StartApp failed Receive Interstitial ${ad.errorMessage.toString()}")
-                FirebaseEvent.send("stItrLdEr","er", ad.errorMessage.toString())
-            }
-        })
-
-
-    }
-
-
-    fun setBnrAds() {
-        /*if (internet){
-
-            if (!Vungle.isInitialized() && dsItr != 2) {
-            }
-        }*/
-
-        when(FirebaseRC.dsBnr){
-            0 -> {
-                val n = (0..1).random()
-                Log.i("lod", n.toString())
-                if (n == 0) {
-                    if (Vungle.isInitialized()) initVungleBanner() else initStarAppBanner()
-                } else {
-                    initStarAppBanner()
-                }
-            }
-            1 -> if (Vungle.isInitialized()) initVungleBanner()
-            2 -> initStarAppBanner()
-            else -> "Bnr ad Disable"
-        }
-
-    }
 
     fun initStarAppBanner(){
         clrBnrSt()
@@ -779,13 +564,9 @@ class MainActivity : AppCompatActivity() {
             override fun onReceiveAd(p0: View?) {
                 Log.i("testAds","receive")
                 bnrTop.addView(p0,bannerParameters)
-                /*if (!appOpen){
-                    startAppBanner?.hideBanner()
-                }*/
             }
 
             override fun onFailedToReceiveAd(p0: View?) {
-
                 Log.i("testAds", "StartApp failed Receive Bnr ${startAppBanner?.errorMessage.toString()}")
                 FirebaseEvent.send("stBnrLdEr","er", startAppBanner?.errorMessage.toString())
             }
@@ -809,33 +590,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun initVungleBanner(){
-        clrBnrVg()
-
-        val adConfig = BannerAdConfig()
-        adConfig.adSize = AdConfig.AdSize.BANNER
-        Banners.loadBanner(Constants.ID_BNR_VG, adConfig, object : LoadAdCallback {
-            override fun onAdLoad(id: String) {
-                if (Banners.canPlayAd(Constants.ID_BNR_VG,adConfig.adSize)){
-                    Log.i("testAds", "\n Vungle banner onAdLoad  + id ")
-                    vungleBanner = Banners.getBanner(id, adConfig, App.getMainActivity()?.vunglePlayAdCallback("Bnr"))
-                    bnrTop.addView(vungleBanner)
-                    /*if (!appOpen){
-                        vungleBanner?.setAdVisibility(false)
-                    }*/
-                }
-
-            }
-
-            override fun onError(id: String, e: VungleException) {
-                Log.i("testAds", "\n Vungle banner loaderror : ${e.localizedMessage} ")
-                FirebaseEvent.send("vgBnrLdEr","er", e.exceptionCode.toString())
-            }
-        })
-
-
-    }
-
     private fun clrBnrSt(){
         if (startAppBanner != null){
             startAppBanner!!.hideBanner()
@@ -844,71 +598,99 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun clrBnrVg(){
-        if (vungleBanner != null){
-            vungleBanner?.destroyAd()
-            vungleBanner = null
-            bnrTop.removeAllViews()
-        }
 
+    fun hideBnr(){
+        bnrTop.visibility = View.GONE
     }
 
 
 
-    fun vunglePlayAdCallback(identity: String) = object : PlayAdCallback {
-        override fun creativeId(creativeId: String?) {
-            //TODO("Not yet implemented")
-        }
+    fun loadNativeAd() {
+        Log.i("tsrmtxc","dsntv ${FirebaseRC.dsNtv}")
+        if (FirebaseRC.dsNtv != 1 && FirebaseRC.dsNtv != 3) {
+            val nativePrefs = NativeAdPreferences()
+                .setAdsNumber(1)
+                .setPrimaryImageSize(4)
+                .setSecondaryImageSize(0)
 
-        override fun onAdStart(id: String?) {
-            Log.i("testAds", "\n Vungle $identity onAdStart ")
-        }
+            val nativeAd = StartAppNativeAd(this)
+            nativeAd.loadAd(nativePrefs, object : AdEventListener {
+                override fun onReceiveAd(ad: Ad) {
+                    Log.i("comolasmodas", "onReceiveAd")
+                    ctnNtvAd.visibility = View.VISIBLE
+                    val nativeAds = nativeAd.nativeAds
+                    if (nativeAds != null && nativeAds.isNotEmpty()) {
 
-        override fun onAdEnd(id: String?, completed: Boolean, isCTAClicked: Boolean) {
-            Log.i("testAds", "\n Vungle $identity onAdEnd $completed $isCTAClicked ")
-        }
+                        val ad = nativeAds[0]
 
-        override fun onAdEnd(id: String?) {
-            Log.i("testAds", "\n Vungle $identity onAdEnd2 ")
-        }
+                        adNtvBtn.setOnClickListener {
+                            ctnNtvAd.performClick()
+                        }
 
-        override fun onAdClick(id: String?) {
-            Log.i("testAds", "\n Vungle $identity onAdClick $id")
-            FirebaseEvent.send("vg${identity}Cl","", "")
-        }
+                        //holder.icon.setImageBitmap(ad.imageBitmap)
+                        adNtvIc.clipToOutline = true
+                        Glide.with(this@MainActivity).load(ad.imageUrl).error(R.drawable.er_glide)
+                            .into(adNtvImg)
+                        Glide.with(this@MainActivity).load(ad.secondaryImageUrl)
+                            .error(R.drawable.er_glide).into(adNtvIc)
+                        adNtvTl.text = ad.title
+                        adNtvDes.text = ad.description
+                        adNtvBtn.text =
+                            if (ad.callToAction != "") ad.callToAction else if (ad.isApp) "Install" else "Open"
 
-        override fun onAdRewarded(id: String?) {
-            Log.i("testAds", "\n Vungle $identity onAdRewarded ")
-            FirebaseEvent.send("vg${identity}Rw","", "")
-        }
+                        ad.registerViewForInteraction(ctnNtvAd)
 
-        override fun onAdLeftApplication(id: String?) {
-            Log.i("testAds", "\n Vungle $identity onAdLeftApplication ")
-        }
+                        //gone en 5 seg
 
-        override fun onError(id: String?, exception: VungleException?) {
-            Log.i("testAds", "\n Vungle $identity onError + ${exception?.message} ")
-            FirebaseEvent.send("vg${identity}Er","er", exception?.exceptionCode.toString())
-        }
+                    } else {
+                        ctnNtvAd.visibility = View.GONE
+                    }
+                }
 
-        override fun onAdViewed(id: String?) {
-            Log.i("testAds", "\n Vungle $identity onAdViewed ")
-            FirebaseEvent.send("vg${identity}Vw","", "")
+                override fun onFailedToReceiveAd(ad: Ad) {
+                    Log.i("comolasmodas", "onFailed")
+                }
+            })
+            Log.i("comolasmodas", "onReceiveAdfIN")
         }
+    }
+
+
+    fun deleteNtvAd(){
+        ctnNtvAd.visibility = View.GONE
+    }
+
+
+    fun initStartAppInterstitial(){
+        startAppAd.loadAd(adPrederence,object : AdEventListener {
+            override fun onReceiveAd(ad: Ad) {
+                Varss.stBfAd = simpleExoPlayer.playWhenReady
+                simpleExoPlayer.playWhenReady = false
+                startAppAd.showAd(startAppAdCallback())
+                Log.i("testAds", "\n StartApp Receive Interstitial")
+
+            }
+            override fun onFailedToReceiveAd(ad: Ad) {
+                Log.i("testAds", " StartApp failed Receive Interstitial ${ad.errorMessage.toString()}")
+                FirebaseEvent.send("stItrLdEr","er", ad.errorMessage.toString())
+            }
+        })
+
 
     }
 
     private fun startAppAdCallback() = object : AdDisplayListener{
         override fun adHidden(p0: Ad?) {
+            if (Varss.stBfAd){
+                simpleExoPlayer.playWhenReady = true
+            }
+
             Log.i("testAds", "\n StartApp Itrs adHidden ")
         }
 
         override fun adDisplayed(p0: Ad?) {
             Log.i("testAds", "\n StartAppItrs  adDisplayed ")
-            if (stVidAdx){
-                //mainWebView.playVideo()
-                stVidAdx = false
-            }
+            Toast.makeText(this@MainActivity, "termino adds", Toast.LENGTH_SHORT).show()
             FirebaseEvent.send("stItrDs","", "")
         }
 
@@ -926,53 +708,13 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun loadNativeAd() {
-        val nativePrefs = NativeAdPreferences()
-            .setAdsNumber(1)
-            .setPrimaryImageSize(4)
-            .setSecondaryImageSize(0)
-
-        val nativeAd = StartAppNativeAd(this)
-        nativeAd.loadAd(nativePrefs, object : AdEventListener {
-            override fun onReceiveAd(ad: Ad) {
-                Log.i("comolasmodas","onReceiveAd")
-                ctnNtvAd.visibility = View.VISIBLE
-                val nativeAds = nativeAd.nativeAds
-                if (nativeAds != null && nativeAds.isNotEmpty()) {
-
-                    val ad = nativeAds[0]
-
-                    adNtvBtn.setOnClickListener {
-                        ctnNtvAd.performClick()
-                    }
-
-                    //holder.icon.setImageBitmap(ad.imageBitmap)
-                    adNtvIc.clipToOutline = true
-                    Glide.with(this@MainActivity).load(ad.imageUrl).error(R.drawable.er_glide).into(adNtvImg)
-                    Glide.with(this@MainActivity).load(ad.secondaryImageUrl).error(R.drawable.er_glide).into(adNtvIc)
-                    adNtvTl.text = ad.title
-                    adNtvDes.text = ad.description
-                    adNtvBtn.text = if (ad.callToAction != "") ad.callToAction else if (ad.isApp) "Install" else "Open"
-
-                    ad.registerViewForInteraction(ctnNtvAd)
-
-                }else{
-                    //holder.itemView.visibility = View.GONE
-                }
-            }
-
-            override fun onFailedToReceiveAd(ad: Ad) {
-                Log.i("comolasmodas","onFailed")
-            }
-        })
-        Log.i("comolasmodas","onReceiveAdfIN")
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        Log.i("NewIntxa1", intent?.data.toString())
+        Log.i("NewIntxa2", intent?.getStringExtra(Intent.EXTRA_TEXT).toString())
+        Intentsx.New(intent)
     }
 
-
-    fun deleteNtvAd(){
-        //ctnNtvAd.removeAllViews()
-        ctnNtvAd.visibility = View.GONE
-    }
 
 
     fun showAcMsj(msjx:String,urlMsj:String){
@@ -980,11 +722,11 @@ class MainActivity : AppCompatActivity() {
         val intent_msj = Intent(this, MensajeActivity::class.java)
         intent_msj.putExtra("msjx",msjx)
         intent_msj.putExtra("urlMsjx",urlMsj)
-        App.getMainActivity()?.startActivity(intent_msj)
+        startActivity(intent_msj)
 
     }
 
-    fun removeTxEr(idTx:Int){
+    private fun removeTxEr(idTx:Int){
         ctnLA.removeView(findViewById(idTx))
     }
 
@@ -999,17 +741,52 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    private fun getConfigCloud() {
+        FirebaseRC.fetch {}
+    }
 
-    //ONBACK
-    override fun onBackPressed() {
 
-        if (viewPager.currentItem == 1){
-            viewPager.currentItem = 0
-        }else{
-            super.onBackPressed()
+    fun updt(tp: String, url: String) {
+        val intn_updt = Intent(this, UpdateActivity::class.java)
+        intn_updt.putExtra("updtUrl", url)
+        when (tp) {
+            "A" -> {
+                intn_updt.putExtra("updtTp", "A")
+            }
+            "B" -> {
+                intn_updt.putExtra("updtTp", "B")
+
+            }
         }
+        startActivity(intn_updt)
+
+    }
+    fun showBg(state:Boolean){
+        if (state){
+            bgls.visibility = View.VISIBLE
+            bgls.setImageResource(R.drawable.badge_load)
+            (bgls.drawable as? Animatable)?.start()
+        }else{
+            bgls.visibility = View.GONE
+            (bgls.drawable as? Animatable)?.stop()
+        }
+    }
 
 
+
+
+    fun dwAnim(st:Boolean){
+
+        GlobalScope.launch(Dispatchers.Main) {
+            if (st) {
+                prgsDw.visibility = View.VISIBLE
+            } else {
+                if (Download.dwsEnqueue == 0){
+                    prgsDw.visibility = View.GONE
+                }
+
+            }
+        }
     }
 
 
@@ -1017,36 +794,23 @@ class MainActivity : AppCompatActivity() {
         simpleExoPlayer.release()
     }
 
+    private fun playbackStateListener() = object : Player.Listener {
 
-    fun stFocusVideo(st:Boolean){
-        if (st){
-            //val pnl = (activity as ListActivity).quBhvr.state
-            /*if (pnl == BottomSheetBehavior.STATE_EXPANDED) {
-                simpleExoPlayer.playWhenReady = true
-                simpleExoPlayer.playbackState
-            }*/
-
-        }else{
-            simpleExoPlayer.pause()
-            simpleExoPlayer.playWhenReady = false
-            simpleExoPlayer.playbackState
-
+        override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+            super.onPlayWhenReadyChanged(playWhenReady, reason)
+            if (playWhenReady){
+                val fg = pagerAdapter!!.hashMap[viewPager.currentItem] as ShowFragment?
+                fg?.animPlayPause(true)
+            }else{
+                val fg = pagerAdapter!!.hashMap[viewPager.currentItem] as ShowFragment?
+                fg?.animPlayPause(false)
+            }
+            Log.i("tspkayer", "cccc $playWhenReady ||  $reason")
 
         }
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        App.releaseAndReAcquireLocks(false)
-
-        Log.i("tsd","SALIOOOO")
-        if (Util.SDK_INT > 23) releasePlayer()
-    }
-
-    private fun playbackStateListener() = object : Player.Listener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+            Log.i("tspkayer", "aaa " +playWhenReady.toString())
+
             if (playbackState == Player.STATE_BUFFERING) {
                 //progressBar.visibility = View.VISIBLE
                 //playerView.useController = false
@@ -1060,43 +824,23 @@ class MainActivity : AppCompatActivity() {
 
 
         override fun onPlaybackStateChanged(playbackState: Int) {
-            val stateString: String = when (playbackState) {
-                ExoPlayer.STATE_IDLE -> "ExoPlayer.STATE_IDLE      -"
-                ExoPlayer.STATE_BUFFERING -> "ExoPlayer.STATE_BUFFERING -"
+            Log.i("tspkayer", "bbb  " + playbackState)
+            when (playbackState) {
                 ExoPlayer.STATE_READY -> {
-                    /*if (DtList.getVidFromPos(0).idVid == vidCurrent){
-                        sh_exo_prev.alpha = 0.2f
-                    }else{
-                        sh_exo_prev.alpha = 1f
+                    Log.i(TAGFN,"Readyy")
+                    Log.i("tspkayer", "Readyy desnuevooo")
+                    showBg(false)
+                    val fg = pagerAdapter!!.hashMap[viewPager.currentItem] as ShowFragment?
+                    fg?.hideImg()
 
-                    }*/
-
-                    //showPanel(false)
-                    "ExoPlayer.STATE_READY     -"
+                    deleteNtvAd()
                 }
-                ExoPlayer.STATE_ENDED -> {
-                    //showPanel(true)
-                    //AdControler.showAd()
-                    "ExoPlayer.STATE_ENDED     -"
-                }
-                else -> "UNKNOWN_STATE             -"
+                ExoPlayer.STATE_IDLE -> {}
+                ExoPlayer.STATE_BUFFERING -> {}
+                ExoPlayer.STATE_ENDED -> {}
+                else -> {}
             }
-            Log.i("tslistenr", "changed state to $stateString || $playbackState")
-            if (stateString == "ExoPlayer.STATE_READY     -"){
-                //nextVideo()
-                Log.i("tslistenr", "changed state tooooooooooo")
-                //currentFg?.hideImg()
-                //if esta en help
-                showBg(false)
-                val fg = pagerAdapter!!.hashMap[viewPager.currentItem] as ShowFragment?
-                fg?.hideImg()
 
-                if (Varss.inHelp){
-                    simpleExoPlayer.pause()
-                }
-
-                deleteNtvAd()
-            }
         }
 
     }
@@ -1105,14 +849,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun showTxNoFound() {
 
-        Log.i("tsSearchx","showTxNoFound1")
 
         GlobalScope.launch(Dispatchers.Main) {
-            Log.i("tsSearchx","showTxNoFound2")
             showBg(false)
-
-            //(scOpBarSr.drawable as? Animatable)?.stop()
-            //scOpBarSr.visibility = View.GONE
 
             val tv = TextView(this@MainActivity)
             tv.text = getString(R.string.no_fnd)
@@ -1142,62 +881,24 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    fun showBg(state:Boolean){
-        if (state){
-            bgls.visibility = View.VISIBLE
-            bgls.setImageResource(R.drawable.badge_load)
-            (bgls.drawable as? Animatable)?.start()
+
+
+    override fun onBackPressed() {
+
+        if (viewPager.currentItem == 1){
+            viewPager.currentItem = 0
         }else{
-            bgls.visibility = View.GONE
-            (bgls.drawable as? Animatable)?.stop()
+            super.onBackPressed()
         }
+
+
     }
 
-    fun addTabs(){
-        mnList.forEach {
-            tabLayout.addTab(tabLayout.newTab().setText(it.title))
-        }
+    override fun onDestroy() {
+        super.onDestroy()
+        App.releaseAndReAcquireLocks(false)
+        if (Util.SDK_INT > 23) releasePlayer()
     }
-
-    fun logx(ch:String,ms:String){
-        Log.i(ch,ms)
-    }
-
-
-    fun saveLastSing() {
-        //SALVAR LA ULTIMA LIST QUE ESTUVO REPRODUCIENDO PARA VOLVER A ELLA CUANDO REGRESE
-        //storage.edit().putString(SAVE_LAST_SING, mainWebView.currentVideoId).apply()
-    }
-
-    fun dwAnim(st:Boolean){
-
-        GlobalScope.launch(Dispatchers.Main) {
-            if (st) {
-                prgsDw.visibility = View.VISIBLE
-            } else {
-                if (Download.dwsEnqueue == 0){
-                    prgsDw.visibility = View.GONE
-                }
-
-            }
-        }
-    }
-
-    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        if (event.action == MotionEvent.ACTION_DOWN) {
-            val v = currentFocus
-            if (v is EditText) {
-                val outRect = Rect()
-                v.getGlobalVisibleRect(outRect)
-                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    v.clearFocus()
-                    hideKeyboard(v)
-                }
-            }
-        }
-        return super.dispatchTouchEvent(event)
-    }
-
 
     override fun onResume() {
         super.onResume()

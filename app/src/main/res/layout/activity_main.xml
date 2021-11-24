@@ -61,6 +61,52 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/badge_load" />
 
+    <ProgressBar
+        android:id="@+id/prgsDw"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+        android:indeterminateTint="#B53AEA"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnCfg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+        android:backgroundTint="#00FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/exo_ic_settings"
+        app:tint="@color/white" />
+
+    <ImageView
+        android:id="@+id/icUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="70dp"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_arrow_up"
+        app:tint="@color/color_primary" />
+
+    <include
+        layout="@layout/native_ad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/tabLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <FrameLayout
         android:id="@+id/bnrTop"
         android:layout_width="320dp"
@@ -72,50 +118,5 @@
         app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
-
-    <ProgressBar
-        android:id="@+id/prgsDw"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_gravity="center"
-        android:indeterminateTint="#B53AEA"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/bnrTop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/bnrTop"
-        app:layout_constraintTop_toTopOf="@+id/bnrTop" />
-
-    <ImageButton
-        android:id="@+id/btnCfg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#00FFFFFF"
-        android:tint="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/bnrTop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/bnrTop"
-        app:layout_constraintTop_toTopOf="@+id/bnrTop"
-        app:srcCompat="@drawable/exo_ic_settings" />
-
-    <include
-        layout="@layout/native_ad"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/tabLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageView
-        android:id="@+id/icUp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:padding="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/tabLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_arrow_up"
-        app:tint="@color/color_primary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
