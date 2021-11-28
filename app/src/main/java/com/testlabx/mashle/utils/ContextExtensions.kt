@@ -35,6 +35,7 @@ import com.testlabx.mashle.MainActivity
 import com.testlabx.mashle.R
 import com.testlabx.mashle.helpers.Constants
 import android.animation.AnimatorListenerAdapter
+import android.app.Notification
 import android.graphics.Color
 
 import android.view.inputmethod.InputMethodManager

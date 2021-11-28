@@ -16,7 +16,6 @@
         android:name="android.permission.INTERNET"
         android:required="false" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
     <uses-permission
         android:name="android.permission.FOREGROUND_SERVICE"
         android:required="false" />
@@ -75,6 +74,18 @@
             android:name="com.startapp.sdk.adsbase.StartAppInitProvider"
             android:authorities="${applicationId}.startappinitprovider"
             tools:node="remove" />
+
+
+
+        <service
+            android:name=".service.MainService"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </service>
 
         <service
             android:name=".helpers.MyFirebaseMessagingService"

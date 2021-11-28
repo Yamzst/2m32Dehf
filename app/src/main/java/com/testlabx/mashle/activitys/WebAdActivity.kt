@@ -130,13 +130,13 @@ class WebAdActivity : AppCompatActivity() {
                     Log.i(TAG, "doUpdate $url")
                 }else{
 
-                    msjAd.text = "Publicidad"
+                    msjAd.text = "Anuncio"
                     ctnMsjAd.visibility = View.VISIBLE
                     urlLoads += 1
                     if (urlLoads == 2) {
                         Handler(Looper.getMainLooper()).postDelayed({
                             finish()
-                        }, 5000)
+                        }, 8000)
                     }
                 }
             }

@@ -27,9 +27,6 @@ import com.testlabx.mashle.activitys.*
 import com.testlabx.mashle.helpers.*
 import com.testlabx.mashle.utils.*
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.util.Util
 import com.startapp.sdk.ads.nativead.NativeAdPreferences
 import com.startapp.sdk.ads.nativead.StartAppNativeAd
@@ -44,26 +41,32 @@ import kotlinx.coroutines.launch
 import org.schabi.newpipe.extractor.stream.StreamInfo
 import org.schabi.newpipe.extractor.stream.StreamInfoItem
 import android.widget.Toast
-import com.google.android.exoplayer2.MediaItem
 import android.widget.RelativeLayout
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.bumptech.glide.Glide
+import com.google.android.exoplayer2.*
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.native_ad.*
 import org.schabi.newpipe.extractor.ServiceList
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory
-import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener
 import com.startapp.sdk.adsbase.model.AdPreferences
+import com.testlabx.mashle.service.MainService
 
 
 class MainActivity : AppCompatActivity() {
 
     val TAGFN = "tsFinalx"
-    var adList: ArrayList<String> = ArrayList()
 
-    var idsList: ArrayList<String> = ArrayList()
+    val TAGVIDS = "tsVidsx"
+    var adList: ArrayList<String> = ArrayList()
+    var idsN = 0
+    var tempList: ArrayList<InfoVid> = ArrayList()
     val imgList: HashMap<Int, Bitmap> = HashMap()
+    var bcCdPl = 0
+
+    var lstGetPos = -1
 
     private var pagerAdapter: PagerAdapter? = null
     lateinit var simpleExoPlayer: SimpleExoPlayer
@@ -81,6 +84,28 @@ class MainActivity : AppCompatActivity() {
     var searchError = false
     var idTx = 0
 
+    private var serviceToMainActivityCallback: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val methodName = intent.getStringExtra(Constants.serivceNotificationMethod)
+            if (methodName != null) {
+                when (methodName) {
+                    Constants.PLAY_VIDEO_IF_PAUSED_FROM_NOTIFICATION -> {
+                        Log.i(TAGNT,"playVid - Main")
+                        playVideo()
+                    }
+                    Constants.PAUSE_VIDEO_IF_PLAYING_FROM_NOTIFICATION -> {
+                        pauseVideo()
+                    }
+                    Constants.STOP_FROM_NOTIFICATION -> {
+                        onDestroy()
+                    }
+
+                }
+            }
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_Mashle)
         super.onCreate(savedInstanceState)
@@ -91,6 +116,8 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
+
+        Toast.makeText(this, "createee", Toast.LENGTH_SHORT).show()
         tintBarNv(Color.BLACK)
         tintBarSt(Color.BLACK)
 
@@ -104,7 +131,7 @@ class MainActivity : AppCompatActivity() {
         simpleExoPlayer = SimpleExoPlayer.Builder(App.AppContext).build() //this
         simpleExoPlayer.repeatMode = Player.REPEAT_MODE_ONE
         simpleExoPlayer.playWhenReady = true
-        simpleExoPlayer.setWakeMode(C.WAKE_MODE_NETWORK)
+        //simpleExoPlayer.setWakeMode(C.WAKE_MODE_NETWORK)
         //playerView.requestFocus()
         //playerView.hideController()
         //playerView.controllerAutoShow = false
@@ -133,6 +160,9 @@ class MainActivity : AppCompatActivity() {
             0 ->{}
             1 ->{
                 Utilsx.createNotificationChannel(this,Constants.CHANNELID)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Utilsx.createNtfChPlayer(this)
+                }
                 FirebaseRC.settingsRmtCnfg()
                 storage.edit().putInt(Constants.SV_FRZ_CNT,2).apply()
             }
@@ -162,8 +192,11 @@ class MainActivity : AppCompatActivity() {
             viewPager.currentItem = viewPager.currentItem - 1
         }
 
+
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
+
+                //simpleExoPlayer.playWhenReady = false
 
                 showBg(true)
 
@@ -174,24 +207,30 @@ class MainActivity : AppCompatActivity() {
                 simpleExoPlayer.playWhenReady = true
                 simpleExoPlayer.seekTo(position,0)
 
-                if (position % 4 == 0) {
-                    Log.i("tsVidxo", "$position")
-                    if (idsList.size != 0) {
-                        //var n = if (idsList.size % 7 == 0) 7 else idsList.size % 7
-                        for (x in 0..7) { //position  //idsList.size
-                            if (x < idsList.size) {
-                                getNewUrl(idsList[x], Varss.crtnPlst)
+                GlobalScope.launch(Dispatchers.IO) {
+                    if (position % 4 == 0 && tempList.size != 0) {
+                        logx("obtener mas items")
+                        if (position > lstGetPos) {
+                            lstGetPos = position
+                            logx("obtener mas items - si pudo")
+                            //var n = if (idsList.size % 7 == 0) 7 else idsList.size % 7
+                            for (x in 0..7) { //position  //idsList.size
+                                if (x < tempList.size) getNewUrl(tempList[x], Varss.crtnPlst)
+                                logx("getNewUrl $x || ${Varss.crtnPlst}")
+                                //puede que se remueva
+                                //pienso q ..tempList.size == 3 entonces como esta en segundo plano
+                                //se elimino aqui entonces  cuando se va a buscar ya no esta y da error
                             }
-                        }
 
+                        }
                     }
                 }
-                //getNewUrl(idsList[1], Varss.crtnPlst)
 
 
                 AdControler.showAdWeb()
 
-                if (position == Varss.idsN - 1){
+
+                if (position == idsN - 1){
                     icUp.visibility = View.VISIBLE
                 }else{
                     icUp.visibility = View.GONE
@@ -207,9 +246,16 @@ class MainActivity : AppCompatActivity() {
                 AdControler.showAdWeb()
                 AdControler.showAdNat()
 
-                Varss.crtnPlst = tab.position
-                Log.i(TAGFN,"newQuery")
-                newQuery(Varss.mnList[tab.position].url)
+
+                var cdPl = (1..50).random() //50
+                while(cdPl == bcCdPl){
+                    cdPl = (1..50).random()
+                }
+                bcCdPl = cdPl
+                Varss.crtnPlst = cdPl //random number
+                logx("$bcCdPl || $cdPl")
+                logx("newQuerry ${tab.position}")
+                newQuery(Varss.mnList[tab.position].url,cdPl)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -223,7 +269,7 @@ class MainActivity : AppCompatActivity() {
             val idVid = "INEbRe0MWf4"
             try {
                 Log.i(TAGFN,"item ts1 finishAAA")
-                val st = StreamInfo.getInfo("https://m.youtube.com/watch?v=${idVid}")
+                val st = StreamInfo.getInfo("https://www.youtube.com/watch?v=${idVid}")
                 Log.i(TAGFN,"item ts1 finishBBB")
                 val vdSt = st.name
 
@@ -241,6 +287,9 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        startNotify()
+
+
     }
 
 
@@ -250,7 +299,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun newQuery(qrx:String) {
+    fun newQuery(qrx:String,pls: Int) {
 
         var tp = ""
         val qrSearch = if (qrx.contains("srch:")){
@@ -261,7 +310,7 @@ class MainActivity : AppCompatActivity() {
             "https://www.youtube.com/playlist?list=$qrx"
         }
 
-        searchQr(qrSearch,tp)
+        searchQr(qrSearch,tp,pls)
 
         viewPager.visibility = View.GONE
         showBg(true)
@@ -275,57 +324,65 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    fun searchQr(qrx:String,tp:String){
-        Log.i(TAGFN,"serachQr")
+    fun searchQr(qrx:String,tp:String,pls: Int){
+        logx("searchQr ${Varss.crtnPlst}")
 
         GlobalScope.launch(Dispatchers.IO) {
 
+            logx("clear vars init ${Varss.crtnPlst}")
             DtList.database?.vidDao()?.deleteAll()
             imgList.clear()
-            idsList.clear()
-            Varss.idsN = 0
+            tempList.clear()
+            idsN = 0
+            lstGetPos = -1
             launch(Dispatchers.Main) {
                 simpleExoPlayer.clearMediaItems()
             }
+            logx("clear vars init ${Varss.crtnPlst}")
 
             try {
 
-                Log.i(TAGFN,"extractor init")
                  if (tp == "search"){
                      val extractor = ServiceList.YouTube.getSearchExtractor(qrx,
                          Collections.singletonList(YoutubeSearchQueryHandlerFactory.MUSIC_VIDEOS), "")
                      extractor.fetchPage()
 
+                     if (pls != Varss.crtnPlst) return@launch
+                     logx("searchQr llego data ${Varss.crtnPlst}")
+
                      for (song in extractor.initialPage.items) {
 
                          val ex = song as StreamInfoItem
                          val n = Utilsx.getIdFromLink(ex.url)
 
-                         DtList.database?.vidDao()?.insertVid(Vid(n,Varss.idsN,ex.name,ex.uploaderName,"","","",""))
+                         idsN ++
 
-                         idsList.add(n)
-                         Varss.idsN ++
+                         tempList.add(InfoVid(n,ex.name,ex.uploaderName))
                      }
 
                 }else{
                      val extractor = ServiceList.YouTube.getPlaylistExtractor(qrx)
                      extractor.fetchPage()
+
+                     if (pls != Varss.crtnPlst) return@launch
+                     logx("searchQr llego data ${Varss.crtnPlst}")
+
                      for (song in extractor.initialPage.items) {
 
                          val ex = song as StreamInfoItem
                          val n = Utilsx.getIdFromLink(ex.url)
 
-                         DtList.database?.vidDao()?.insertVid(Vid(n,Varss.idsN,ex.name,ex.uploaderName,"","","",""))
+                         idsN ++
 
-                         idsList.add(n)
-                         Varss.idsN ++
+                         tempList.add(InfoVid(n,ex.name,ex.uploaderName))
 
                      }
                 }
 
 
-                Log.i(TAGFN,"extractorfinish")
-                getNewUrl(idsList[0],Varss.crtnPlst)
+                logx("searchQr termino ${Varss.crtnPlst}")
+                getNewUrl(tempList[0],pls)
+                getNewUrl(tempList[1],pls)
                 //lamar a mas aqui
 
 
@@ -341,9 +398,7 @@ class MainActivity : AppCompatActivity() {
                     viewPager.visibility = View.VISIBLE
                     pagerAdapter = PagerAdapter(this@MainActivity)
                     viewPager.adapter = pagerAdapter
-
                     Varss.frstDw = true
-
                 }
 
             }
@@ -354,28 +409,20 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    fun getNewUrl(id:String,pls:Int){
-        Log.i(TAGFN,"item $id init")
+    fun getNewUrl(infoVid: InfoVid,pls:Int){
+
+        logx("getNewUrl ${Varss.crtnPlst} - $pls")
         GlobalScope.launch(Dispatchers.IO) {
 
-            //val id = idsList[position]
-            //val vid = DtList.database!!.vidDao().getVidFromPos(position)
-            //val id = vid.idVid
-
-            val vid = DtList.database!!.vidDao().getVidFromId(id)
-            val nexUrl = vid.urlVid
-
-            //val nexUrl = DtList.database!!.vidDao().getUrlFromPos(position)
-
-            if (nexUrl == "" && idsList.indexOf(id) != -1){
-                idsList.remove(id)
+            if (tempList.indexOf(infoVid) != -1){
+                tempList.remove(infoVid)
                 val urlAu:String
                 val nwUrl:String
                 try {
-                    Log.i(TAGFN,"item $id finishAAA")
 
-                    val st = StreamInfo.getInfo("https://m.youtube.com/watch?v=${vid.idVid}")
-                    Log.i(TAGFN,"item $id finishBBB")
+                    val st = StreamInfo.getInfo("https://www.youtube.com/watch?v=${infoVid.id}")
+                    logx("$pls obtuvo StreamInfo crnPls${Varss.crtnPlst}")
+                    if (pls != Varss.crtnPlst) return@launch
                     val vdSt = st.videoStreams
 
                     val auSt = st.audioStreams
@@ -388,38 +435,37 @@ class MainActivity : AppCompatActivity() {
 
                     urlAu = lsTmp.last()
                     nwUrl = vdSt.last().url
-                    //Log.i("sdfgdfg", st.relatedItems.toString())
-                    //Log.i("sdfgdfg", st.relatedItems.size.toString())
+                    logx(nwUrl)
+
+
                 }catch (e:Exception){
                     launch(Dispatchers.Main) {
-                        Toast.makeText(this@MainActivity, "errorr", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@MainActivity, "No se Pudo Descargar", Toast.LENGTH_SHORT).show()
                     }
-                    DtList.rmvId(id)
                     return@launch
 
                 }finally {
-                    //VID ya no enquee
+                    //
                 }
 
-                Log.i("tsVidx", "continuo ${vid.nmVid}")
-                ////val pos = Varss.listIds.indexOf(idNw)
 
                 if (pls == Varss.crtnPlst) {
 
                     launch(Dispatchers.Main) {
 
-                        DtList.database!!.vidDao().setUrlVid(id, nwUrl, urlAu)
 
                         dwImg(nwUrl, simpleExoPlayer.mediaItemCount)
-                        DtList.setPos(id, simpleExoPlayer.mediaItemCount)
+
+                        logx("$pls setNewVid en DtBs ${simpleExoPlayer.mediaItemCount}")
+                        DtList.setNewVid(Vid(infoVid.id,simpleExoPlayer.mediaItemCount,infoVid.nm,infoVid.ch,nwUrl,urlAu,"",""))
 
                         val mediaItem = MediaItem.fromUri(nwUrl)
                         simpleExoPlayer.addMediaItem(simpleExoPlayer.mediaItemCount, mediaItem)//
                         simpleExoPlayer.prepare()
 
 
-                        pagerAdapter?.notifyDataSetChanged()
-                        Log.i(TAGFN,"item $id finish2")
+                        //pagerAdapter?.notifyDataSetChanged()
+                        pagerAdapter?.notifyItemInserted(simpleExoPlayer.mediaItemCount)
 
                     }
 
@@ -443,15 +489,18 @@ class MainActivity : AppCompatActivity() {
             imgList[pos] = bitmap!!
             Log.i("tsStxPos",imgList.size.toString())
 
-            launch(Dispatchers.Main) {
+            /*launch(Dispatchers.Main) {
             //Toast.makeText(this@MainActivity, "oooooooo", Toast.LENGTH_SHORT).show()
             // importante no se puede lanza toas preguntar para despejar dudas
-            // imgx.setImageBitmap(bitmap)
-            }
+            }*/
 
         }
     }
 
+
+    fun logx(msj:String){
+        Log.i(TAGVIDS,msj)
+    }
 
     //Internet
     private fun internetState() {
@@ -497,7 +546,7 @@ class MainActivity : AppCompatActivity() {
     //ADSX
 
     fun initStarApp() {
-        val ageUser = storage.getInt(Constants.SV_AGE,22)
+        /*val ageUser = storage.getInt(Constants.SV_AGE,22)
         val genUser = storage.getInt(Constants.SV_GEN,0)
 
         val gen = if (genUser == 0){
@@ -505,9 +554,10 @@ class MainActivity : AppCompatActivity() {
         }else{
             SDKAdPreferences.Gender.FEMALE
         }
-
         val sdkAdPreferences = SDKAdPreferences().setAge(ageUser).setGender(gen)
-        StartAppSDK.init(this,Constants.ID_APP_ST,sdkAdPreferences,false)
+         */
+
+        StartAppSDK.init(this,Constants.ID_APP_ST,false)
 
 
     }
@@ -518,19 +568,19 @@ class MainActivity : AppCompatActivity() {
         tmrCntAdWb.postDelayed({
             setAdWeb()
         }, Constants.TM_AD_ITR)
-
     }
 
 
 
     fun setAdWeb() {
-        tmrCntAdWb.post(object : Runnable {
+        tmrAdWb.post(object : Runnable {
             override fun run() {
                 Varss.pdAdWeb = true
-                tmrCntAdWb.postDelayed(this, Constants.TM_AD_ITR)
+                tmrAdWb.postDelayed(this, Constants.TM_AD_ITR)
             }
         })
     }
+
 
     fun showAdWeb(){
         if (NetworkConnection.isConnected.value){
@@ -606,7 +656,6 @@ class MainActivity : AppCompatActivity() {
 
 
     fun loadNativeAd() {
-        Log.i("tsrmtxc","dsntv ${FirebaseRC.dsNtv}")
         if (FirebaseRC.dsNtv != 1 && FirebaseRC.dsNtv != 3) {
             val nativePrefs = NativeAdPreferences()
                 .setAdsNumber(1)
@@ -616,7 +665,9 @@ class MainActivity : AppCompatActivity() {
             val nativeAd = StartAppNativeAd(this)
             nativeAd.loadAd(nativePrefs, object : AdEventListener {
                 override fun onReceiveAd(ad: Ad) {
-                    Log.i("comolasmodas", "onReceiveAd")
+
+                    if (simpleExoPlayer.isPlaying) return
+
                     ctnNtvAd.visibility = View.VISIBLE
                     val nativeAds = nativeAd.nativeAds
                     if (nativeAds != null && nativeAds.isNotEmpty()) {
@@ -629,18 +680,14 @@ class MainActivity : AppCompatActivity() {
 
                         //holder.icon.setImageBitmap(ad.imageBitmap)
                         adNtvIc.clipToOutline = true
-                        Glide.with(this@MainActivity).load(ad.imageUrl).error(R.drawable.er_glide)
-                            .into(adNtvImg)
-                        Glide.with(this@MainActivity).load(ad.secondaryImageUrl)
-                            .error(R.drawable.er_glide).into(adNtvIc)
+                        Glide.with(this@MainActivity).load(ad.imageUrl).error(R.drawable.er_glide).into(adNtvImg)
+                        Glide.with(this@MainActivity).load(ad.secondaryImageUrl).into(adNtvIc)
                         adNtvTl.text = ad.title
                         adNtvDes.text = ad.description
-                        adNtvBtn.text =
-                            if (ad.callToAction != "") ad.callToAction else if (ad.isApp) "Install" else "Open"
+                        adNtvBtn.text = if (ad.callToAction != "") ad.callToAction else if (ad.isApp) "Install" else "Open"
 
                         ad.registerViewForInteraction(ctnNtvAd)
 
-                        //gone en 5 seg
 
                     } else {
                         ctnNtvAd.visibility = View.GONE
@@ -648,10 +695,11 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onFailedToReceiveAd(ad: Ad) {
-                    Log.i("comolasmodas", "onFailed")
+                    FirebaseEvent.send("stNtvLdEr","er", ad.errorMessage.toString())
                 }
+
+
             })
-            Log.i("comolasmodas", "onReceiveAdfIN")
         }
     }
 
@@ -671,7 +719,7 @@ class MainActivity : AppCompatActivity() {
 
             }
             override fun onFailedToReceiveAd(ad: Ad) {
-                Log.i("testAds", " StartApp failed Receive Interstitial ${ad.errorMessage.toString()}")
+                Log.i("testAds", " StartApp failed Interstitial ${ad.errorMessage.toString()}")
                 FirebaseEvent.send("stItrLdEr","er", ad.errorMessage.toString())
             }
         })
@@ -750,17 +798,13 @@ class MainActivity : AppCompatActivity() {
         val intn_updt = Intent(this, UpdateActivity::class.java)
         intn_updt.putExtra("updtUrl", url)
         when (tp) {
-            "A" -> {
-                intn_updt.putExtra("updtTp", "A")
-            }
-            "B" -> {
-                intn_updt.putExtra("updtTp", "B")
-
-            }
+            "A" -> intn_updt.putExtra("updtTp", "A")
+            "B" -> intn_updt.putExtra("updtTp", "B")
         }
         startActivity(intn_updt)
-
     }
+
+
     fun showBg(state:Boolean){
         if (state){
             bgls.visibility = View.VISIBLE
@@ -784,7 +828,6 @@ class MainActivity : AppCompatActivity() {
                 if (Download.dwsEnqueue == 0){
                     prgsDw.visibility = View.GONE
                 }
-
             }
         }
     }
@@ -794,41 +837,32 @@ class MainActivity : AppCompatActivity() {
         simpleExoPlayer.release()
     }
 
+
+
     private fun playbackStateListener() = object : Player.Listener {
+
+        override fun onPlayerError(error: PlaybackException) {
+            Log.i("tsErrorPlayer","onPlayerError")
+            super.onPlayerError(error)
+        }
+
+        override fun onPlayerErrorChanged(error: PlaybackException?) {
+            Log.i("tsErrorPlayer","onPlayerErrorChanged")
+            super.onPlayerErrorChanged(error)
+        }
 
         override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
             super.onPlayWhenReadyChanged(playWhenReady, reason)
-            if (playWhenReady){
-                val fg = pagerAdapter!!.hashMap[viewPager.currentItem] as ShowFragment?
-                fg?.animPlayPause(true)
-            }else{
-                val fg = pagerAdapter!!.hashMap[viewPager.currentItem] as ShowFragment?
-                fg?.animPlayPause(false)
-            }
-            Log.i("tspkayer", "cccc $playWhenReady ||  $reason")
-
         }
-        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-            Log.i("tspkayer", "aaa " +playWhenReady.toString())
-
-            if (playbackState == Player.STATE_BUFFERING) {
-                //progressBar.visibility = View.VISIBLE
-                //playerView.useController = false
-
-            } else {
-                //progressBar.visibility = View.GONE
-                //playerView.useController = true
-            }
-            //logx("onPlayerStateChanged || $playWhenReady || $playbackState")
-        }
+        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {}
 
 
         override fun onPlaybackStateChanged(playbackState: Int) {
             Log.i("tspkayer", "bbb  " + playbackState)
             when (playbackState) {
                 ExoPlayer.STATE_READY -> {
-                    Log.i(TAGFN,"Readyy")
-                    Log.i("tspkayer", "Readyy desnuevooo")
+
+                    //una vez al iniciar
                     showBg(false)
                     val fg = pagerAdapter!!.hashMap[viewPager.currentItem] as ShowFragment?
                     fg?.hideImg()
@@ -841,6 +875,25 @@ class MainActivity : AppCompatActivity() {
                 else -> {}
             }
 
+        }
+
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+
+            if (isPlaying){
+                val fg = pagerAdapter!!.hashMap[viewPager.currentItem] as ShowFragment?
+                fg?.animPlayPause(true)
+            }else{
+                val fg = pagerAdapter!!.hashMap[viewPager.currentItem] as ShowFragment?
+                fg?.animPlayPause(false)
+            }
+
+            updateNotificaton()
+
+            super.onIsPlayingChanged(isPlaying)
+
+
+
+            Log.i("tspkayer","isplaying $isPlaying" )
         }
 
     }
@@ -883,22 +936,6 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    override fun onBackPressed() {
-
-        if (viewPager.currentItem == 1){
-            viewPager.currentItem = 0
-        }else{
-            super.onBackPressed()
-        }
-
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        App.releaseAndReAcquireLocks(false)
-        if (Util.SDK_INT > 23) releasePlayer()
-    }
 
     override fun onResume() {
         super.onResume()
@@ -915,6 +952,104 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         Log.i("tsStx","pauseAc")
     }
+
+
+
+
+    val TAGNT = "tsNotifyx"
+    //CONTROLS MEDIA VIDEO
+    fun pauseVideo() {
+        Log.i(TAGNT,"pauseVid")
+        simpleExoPlayer.pause()
+        simpleExoPlayer.playWhenReady = false
+    }
+
+    fun playVideo() {
+        Log.i(TAGNT,"playVid")
+        simpleExoPlayer.play()
+        simpleExoPlayer.playWhenReady = true
+    }
+    
+
+    //Notify
+    fun startNotify() {
+        registerRecievers()
+        startService()
+    }
+
+
+    private fun registerRecievers() {
+        registerReceiver(
+            serviceToMainActivityCallback,
+            IntentFilter(Constants.SERVICE_TO_MAIN_ACTIVITY_CALLBACK_ID)
+        )
+    }
+
+
+    private fun unregisterRecievers() {
+        try {
+            LocalBroadcastManager.getInstance(this)
+                .unregisterReceiver(serviceToMainActivityCallback)
+        } catch (e: IllegalArgumentException) {
+        }
+        try {
+            unregisterReceiver(serviceToMainActivityCallback)
+        } catch (e: java.lang.Exception) {
+        }
+    }
+
+
+
+
+    fun updateNotificaton() {
+        Intent(App.AppContext, MainService::class.java).apply {
+            this.putExtra(Constants.serivceNotificationMethod, Constants.UPDATE_NOTIFICATION)
+        }.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                App.AppContext.startForegroundService(it)
+            } else {
+                App.AppContext.startService(it)
+            }
+        }
+    }
+
+
+    private fun startService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(Intent(applicationContext, MainService::class.java))
+        } else {
+            startService(Intent(applicationContext, MainService::class.java))
+        }
+    }
+
+
+
+    override fun onDestroy() {
+        unregisterRecievers()
+        pauseVideo()
+        //updateNotificaton()
+
+        App.releaseAndReAcquireLocks(false)
+
+        if (Util.SDK_INT > 23) releasePlayer()
+        Intent(App.AppContext, MainService::class.java).apply {
+            this.putExtra(Constants.serivceNotificationMethod, Constants.STOP_FROM_NOTIFICATION)
+        }.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                App.AppContext.startForegroundService(it)
+            } else {
+                App.AppContext.startService(it)
+            }
+        }
+
+        super.onDestroy()
+    }
+
+
+
+
+
+
 
 
 

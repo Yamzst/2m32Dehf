@@ -49,7 +49,7 @@
         app:layout_constraintStart_toStartOf="@+id/adNtvDes"
         app:layout_constraintTop_toBottomOf="@+id/adNtvDes" />
 
-    <Button
+    <TextView
         android:id="@+id/adNtvBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,9 +57,15 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/shape_circle"
+        android:backgroundTint="@color/color_primary"
+        android:fontFamily="sans-serif-medium"
+        android:paddingStart="17dp"
+        android:paddingTop="7dp"
+        android:paddingEnd="17dp"
+        android:paddingBottom="7dp"
         android:text="Open"
-        android:textSize="13sp"
-        app:iconPadding="0dp"
+        android:textColor="@color/black"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/adNtvImg" />

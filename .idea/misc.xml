@@ -38,11 +38,13 @@
         <entry key="..\:/Users/York/AndroidStudioProjectsBc/Mashle/app/src/main/res/layout/activity_web_ad.xml" value="0.18" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable-anydpi-v24/ic_app_splash.xml" value="0.240625" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable-anydpi-v24/ic_notify.xml" value="0.240625" />
+        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable-anydpi-v24/shape_circle_ad.xml" value="0.225" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.240625" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable/anim_pause_play.xml" value="0.240625" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable/bg_app.xml" value="0.240625" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable/bg_mn.xml" value="0.12239583333333333" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable/ctn_bar.xml" value="0.12239583333333333" />
+        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable/er_glide.xml" value="0.240625" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable/ic_app.xml" value="0.33" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable/ic_appwq.xml" value="0.240625" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable/ic_arrow_prev.xml" value="0.240625" />
@@ -50,24 +52,28 @@
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable/ic_icmas.xml" value="0.240625" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable/ic_launcher_background.xml" value="0.240625" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.240625" />
+        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable/ic_music.xml" value="0.1421875" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable/ic_notify.xml" value="0.240625" />
+        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable/ic_pause.xml" value="0.240625" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable/ic_play.xml" value="0.240625" />
+        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable/ic_previus.xml" value="0.240625" />
+        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable/shape_circle.xml" value="0.225" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/drawable/splash_screen.xml" value="0.240625" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/activity_help.xml" value="0.15217391304347827" />
-        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/activity_main.xml" value="0.18" />
-        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/activity_mensaje.xml" value="0.18" />
-        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/activity_more.xml" value="0.35154975530179444" />
+        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/activity_main.xml" value="0.14" />
+        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/activity_mensaje.xml" value="0.16" />
+        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/activity_more.xml" value="0.2" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/activity_test.xml" value="0.1213768115942029" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/activity_update.xml" value="0.15579710144927536" />
-        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/activity_web_ad.xml" value="0.33" />
-        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/activity_wifi.xml" value="0.1213768115942029" />
+        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/activity_web_ad.xml" value="0.14" />
+        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/activity_wifi.xml" value="0.15" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/ctn_ctrls_mn.xml" value="0.15" />
-        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/custom_controller.xml" value="0.1213768115942029" />
+        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/custom_controller.xml" value="0.15" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/dw_optionsv.xml" value="0.15217391304347827" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/fragment_pager_help.xml" value="0.1213768115942029" />
-        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/fragment_show.xml" value="0.1213768115942029" />
+        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/fragment_show.xml" value="0.1" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/itm_queue_ad.xml" value="0.1213768115942029" />
-        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/native_ad.xml" value="0.1213768115942029" />
+        <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/native_ad.xml" value="0.33" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/native_ad_item_ls.xml" value="0.1213768115942029" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/layout/native_ad_item_mn.xml" value="0.1213768115942029" />
         <entry key="..\:/Users/York/Documents/Proyects/Mashle/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.13541666666666666" />

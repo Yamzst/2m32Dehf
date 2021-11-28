@@ -13,6 +13,13 @@ class Varss {
     }
     companion object{
 
+        //Al init set vars de restartVars no estas
+        var currentId = ""
+
+        var dataTitle = "Mashle"
+
+        var dataChannel = "Listo para descubrir ✨"
+
         var pdAdWeb = false
 
         var dwCount = 0
@@ -20,8 +27,6 @@ class Varss {
         var qr = ""
 
         var frstDw = true
-
-        var idsN = 0
 
         var crntFg = 0
 
@@ -32,9 +37,14 @@ class Varss {
         var stBfAd = false
 
         fun restartVars(){
-            pdAdWeb = false
 
-            crtnPlst = 0
+            currentId = ""
+
+            dataTitle = "Mashle"
+
+            dataChannel = "Listo para descubrir ✨"
+
+            pdAdWeb = false
 
             dwCount = 0
 
@@ -42,9 +52,9 @@ class Varss {
 
             frstDw = true
 
-            idsN = 0
-
             crntFg = 0
+
+            crtnPlst = 0
 
             mnList.clear()
 

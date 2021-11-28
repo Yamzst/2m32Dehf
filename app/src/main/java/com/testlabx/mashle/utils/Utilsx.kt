@@ -10,7 +10,9 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.annotation.IntRange
+import androidx.annotation.RequiresApi
 import com.testlabx.mashle.App
+import com.testlabx.mashle.helpers.Constants
 import com.testlabx.mashle.helpers.FirebaseRC
 import java.io.File
 import java.util.*
@@ -54,6 +56,26 @@ object Utilsx {
         }
     }
 
+    fun createNtfChPlayer(ctn:Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val manager: NotificationManager = ctn.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            if (manager.getNotificationChannel(Constants.PLAYER_CHANNEL_ID) == null) {
+
+                val importance = NotificationManager.IMPORTANCE_LOW
+
+                val channel = NotificationChannel(Constants.PLAYER_CHANNEL_ID, "Player", importance)
+
+                channel.description = "Control Player"
+
+                manager.createNotificationChannel(channel)
+
+            }
+        }
+    }
+
+
+
 
     fun cleanTitle(tl:String):String{
         var newTl = if (tl.contains("(")){
@@ -78,6 +100,23 @@ object Utilsx {
     }
 
 
+    fun prosNmVid(tl:String,ch:String){
+        if (tl.contains(" - ")){
+            val strs = tl.split(" - ").toTypedArray()
+
+            Varss.dataChannel = strs[0]
+
+            if (strs[1].contains("(")){
+                Varss.dataTitle = strs[1].replace("\\(.*\\)".toRegex(), "").trim()
+            }else{
+                Varss.dataTitle = strs[1].replace("\\[.*\\]".toRegex(), "").trim()
+            }
+
+        }else{
+            Varss.dataChannel = ch
+            Varss.dataTitle = tl
+        }
+    }
 
 
 

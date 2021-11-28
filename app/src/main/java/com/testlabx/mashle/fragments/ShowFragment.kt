@@ -25,6 +25,8 @@ import kotlinx.coroutines.launch
 class ShowFragment : Fragment(R.layout.fragment_show) {
 
     var vidCurrent = ""
+    var tl = ""
+    var ch = ""
 
     var pos = 0
 
@@ -33,7 +35,7 @@ class ShowFragment : Fragment(R.layout.fragment_show) {
         super.onViewCreated(view, savedInstanceState)
 
         arguments?.takeIf { it.containsKey("pgx") }?.apply {
-            pos = getInt("pgx") - 1
+            pos = getInt("pgx")
         }
 
 
@@ -41,9 +43,9 @@ class ShowFragment : Fragment(R.layout.fragment_show) {
             imgPh.setImageBitmap((context as MainActivity).imgList[pos])
         }
 
-
         shTlSing.isSelected = true
 
+        imgPh.setOnClickListener {}
 
         exo_play_pause.setOnClickListener {
             playPause()
@@ -76,14 +78,7 @@ class ShowFragment : Fragment(R.layout.fragment_show) {
     }
 
     private fun playPause() {
-        if ((activity as MainActivity).simpleExoPlayer.playWhenReady){
-            (activity as MainActivity).simpleExoPlayer.playWhenReady = false
-
-        }else{
-            (activity as MainActivity).simpleExoPlayer.playWhenReady = true
-
-        }
-
+        (activity as MainActivity).simpleExoPlayer.playWhenReady = !(activity as MainActivity).simpleExoPlayer.playWhenReady
     }
 
 
@@ -100,18 +95,15 @@ class ShowFragment : Fragment(R.layout.fragment_show) {
 
 
     fun setNewVid(){
-        //Log.i(TAG,DtList.database!!.vidDao().getAllUser().toString())
 
         val vid = DtList.getVidFromPos(pos)
-        val id = vid.idVid
-        Log.i("tsVidx", vid.toString())
-        val tl = DtList.getNmFromId(id)
-        val ch = DtList.getChFromId(id)
+        vidCurrent = vid.idVid
+        tl = vid.nmVid
+        ch = vid.chVid
         shTlSing.text = tl
         shChSing.text = ch
 
-
-        vidCurrent = id
+        Utilsx.prosNmVid(tl,ch)
 
     }
 
@@ -126,8 +118,6 @@ class ShowFragment : Fragment(R.layout.fragment_show) {
 
     fun hideImg(){
         imgPh.visibility = View.GONE
-        exo_play_pause.setImageResource(R.drawable.anim_pause_play)
-        (exo_play_pause.drawable as? Animatable)?.start()
     }
 
 
@@ -142,11 +132,13 @@ class ShowFragment : Fragment(R.layout.fragment_show) {
             dwAds()
 
             App.getMainActivity()?.dwAnim(true)
-            val idSv = vidCurrent
-            val urlDw = if (tp == "video") DtList.getVidFromId(idSv).urlVid else DtList.getVidFromId(vidCurrent).urlAud
 
-            var nm = DtList.getVidFromId(idSv).nmVid //Utilsx.nmRandom(20)
-            if (!nm.contains(" - ")) nm = "$nm - ${DtList.getVidFromId(idSv).chVid}"
+            val idSv = vidCurrent
+
+            val vid = DtList.getVidFromId(idSv)
+            val urlDw = if (tp == "video") vid.urlVid else vid.urlAud
+            var nm = vid.nmVid //Utilsx.nmRandom(20)
+            if (!nm.contains(" - ")) nm = "$nm - ${vid.chVid}"
 
             Download.downloadVideo(requireContext(), urlDw, tp, nm) {
                 if (it != null) {
@@ -201,13 +193,17 @@ class ShowFragment : Fragment(R.layout.fragment_show) {
 
     override fun onResume() {
         super.onResume()
-        Log.i("tsStx","resumenFg")
+        Varss.currentId = vidCurrent
+        Utilsx.prosNmVid(tl,ch)
+        Log.i("tsStx","resumenFg ${Varss.currentId}")
+
     //stFocusVideo(true)
     }
 
     override fun onStart() {
         super.onStart()
         Log.i("tsStx","onStarFg")
+
     }
 
 

@@ -12,21 +12,12 @@ object DtList {
         database = AppDatabase.getDatabase(context)
     }
 
-
-    fun getNmFromId(id:String): String {
-        return  database!!.vidDao().getNmFromId(id)
+    fun setNewVid(vid:Vid){
+        database!!.vidDao().insertVid(vid)
     }
 
-    fun getChFromPos(pos:Int): String {
-        return  database!!.vidDao().getChFromPos(pos)
-    }
-
-    fun getNmFromPos(pos:Int): String {
-        return  database!!.vidDao().getNmFromPos(pos)
-    }
-
-    fun getChFromId(id:String): String {
-        return  database!!.vidDao().getChFromId(id)
+    fun rmvId(id:String){
+        database!!.vidDao().deleteId(id)
     }
 
 
@@ -38,32 +29,24 @@ object DtList {
         return database!!.vidDao().getVidFromPos(pos)
     }
 
-    fun updVid(idNw:String,urlVid:String,urlAud:String){
-        database!!.vidDao().setUrlVid(idNw,urlVid,urlAud)
+
+    fun setSvVid(id:String,uriSv:String){
+        database!!.vidDao().setSvVid(id,uriSv)
     }
 
-    fun setSvVid(idNw:String,uriSv:String){
-        database!!.vidDao().setSvVid(idNw,uriSv)
-    }
-
-    fun getSvVid(idNw:String):String{
-        return database!!.vidDao().getSvVid(idNw)
+    fun getSvVid(id:String):String{
+        return database!!.vidDao().getSvVid(id)
     }
 
 
-    fun setSvAud(idNw:String,uriSv:String){
-        database!!.vidDao().setSvAud(idNw,uriSv)
+    fun setSvAud(id:String,uriSv:String){
+        database!!.vidDao().setSvAud(id,uriSv)
     }
 
-    fun getSvAud(idNw:String):String{
-        return database!!.vidDao().getSvAud(idNw)
+    fun getSvAud(id:String):String{
+        return database!!.vidDao().getSvAud(id)
     }
 
-    fun setPos(idNw:String,newPos:Int){
-        database!!.vidDao().setPos(idNw,newPos)
-    }
 
-    fun rmvId(id:String){
-        database!!.vidDao().deleteId(id)
-    }
+
 }

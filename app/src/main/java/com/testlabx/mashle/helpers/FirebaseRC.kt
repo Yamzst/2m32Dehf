@@ -82,8 +82,9 @@ object FirebaseRC {
 
         remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
             if (task.isSuccessful){
-                setConfigCloud()
                 obDt = true
+                setConfigCloud()
+
             }else{
                 setConfigCloud()
                 if (!NetworkConnection.isConnected.value){
@@ -154,7 +155,7 @@ object FirebaseRC {
         val pgAd3 = remoteConfig.getString("pgAd3")
         val pgAd4 = remoteConfig.getString("pgAd4")
         val pgAd5 = remoteConfig.getString("pgAd5")
-
+        val pgAd6 = remoteConfig.getString("pgAd6")
 
 
         if (appCloset) {
@@ -202,11 +203,12 @@ object FirebaseRC {
         App.getMainActivity()?.addTabs()
 
         App.getMainActivity()?.adList!!.apply {
-            //if (pgAd1 != "") add(pgAd1)
+            if (pgAd1 != "") add(pgAd1)
             if (pgAd2 != "") add(pgAd2)
             if (pgAd3 != "") add(pgAd3)
             if (pgAd4 != "") add(pgAd4)
             if (pgAd5 != "") add(pgAd5)
+            if (pgAd6 != "") add(pgAd6)
         }
 
         if (!dsAdWeb) App.getMainActivity()?.initAdWb()

@@ -24,9 +24,9 @@
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/playerView"
         android:layout_width="match_parent"
-        android:layout_height="340dp"
+        android:layout_height="310dp"
 
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="140dp"
         android:background="@color/black"
         android:focusable="false"
         app:controller_layout_id="@layout/custom_controller"
@@ -55,8 +55,8 @@
     <ImageView
         android:id="@+id/imgPh"
         android:layout_width="match_parent"
-        android:layout_height="340dp"
-        android:layout_marginTop="160dp"
+        android:layout_height="310dp"
+        android:layout_marginTop="140dp"
         android:background="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

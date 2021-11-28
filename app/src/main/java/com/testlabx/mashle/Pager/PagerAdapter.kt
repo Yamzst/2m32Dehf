@@ -15,7 +15,7 @@ class PagerAdapter(fa:FragmentActivity):FragmentStateAdapter(fa) {
     override fun createFragment(position: Int): Fragment {
         val fragment = ShowFragment()
         fragment.arguments = Bundle().apply {
-            putInt("pgx", position + 1)
+            putInt("pgx", position)
         }
         hashMap[position] = fragment
         return fragment
